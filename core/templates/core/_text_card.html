@@ -1,0 +1,37 @@
+{% load qazaq %}{# expects: text; optional: mine (ReadingSession), badge #}
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-space-md">
+  <div class="flex flex-col gap-space-sm">
+    <div class="flex items-center justify-between gap-space-sm flex-wrap">
+      <span class="px-space-sm py-0.5 rounded-md bg-primary-fixed text-primary font-label-sm text-label-sm font-bold">{{ text.grade }}-сынып</span>
+      <span class="px-space-sm py-0.5 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">{{ text.get_difficulty_display }}</span>
+      {% if badge %}<span class="px-space-sm py-0.5 rounded-md bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">{{ badge }}</span>{% endif %}
+    </div>
+    <h3 class="font-headline-sm text-[18px] font-semibold text-on-surface line-clamp-1">«{{ text.title }}»</h3>
+    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3">{{ text.excerpt }}</p>
+  </div>
+  <div class="flex flex-col gap-space-sm">
+    <div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+      <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">menu_book</span> {{ text.word_count }} сөз</span>
+      {% if text.question_count %}<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">quiz</span> {{ text.question_count }} сұрақ</span>{% endif %}
+      <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span> ~{{ text.minutes_estimate|num:1 }} мин</span>
+    </div>
+    {% if mine %}
+    <a href="{{ mine.get_absolute_url }}" class="flex items-center gap-1 font-label-sm text-label-sm text-secondary"><span class="material-symbols-outlined text-[16px] fill-icon">check_circle</span> Оқылған ({{ mine.wpm|num }} сөз/мин, {{ mine.accuracy|num }}%)</a>
+    {% endif %}
+    {% if user.is_student %}
+    <a href="{% url 'reading' text.pk %}" class="w-full py-space-sm bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-space-xs transition-colors">
+      <span class="material-symbols-outlined text-[18px]">{% if mine %}replay{% else %}play_arrow{% endif %}</span>{% if mine %}Қайта оқу{% else %}Оқуды бастау{% endif %}
+    </a>
+    {% elif user.is_teacher %}
+    <a href="{% url 'assign_text' %}?text={{ text.pk }}" class="w-full py-space-sm bg-surface-container-high hover:bg-surface-container-highest text-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-space-xs transition-colors">
+      <span class="material-symbols-outlined text-[18px]">assignment_add</span>Сыныпқа тағайындау
+    </a>
+    {% endif %}
+    {% if user.is_admin %}
+    <div class="grid grid-cols-2 gap-space-sm">
+      <a href="{% url 'panel_text_edit' text.pk %}" class="py-space-sm bg-surface-container-high text-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-space-xs"><span class="material-symbols-outlined text-[18px]">edit</span>Өңдеу</a>
+      <a href="{% url 'panel_questions' text.pk %}" class="py-space-sm bg-surface-container-high text-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-space-xs"><span class="material-symbols-outlined text-[18px]">quiz</span>Тест</a>
+    </div>
+    {% endif %}
+  </div>
+</div>

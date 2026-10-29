@@ -1,0 +1,54 @@
+{% extends "core/base.html" %}
+{% block title %}Пайдаланушылар{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-xl">
+  <div>
+    <h1 class="font-headline-lg text-headline-lg">Пайдаланушылар</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant">Рөлді осы жерден өзгертуге болады. Құпиясөздер шифрланып сақталады, сондықтан оларды ешкім (әкімші де) көре алмайды — ұмытылса, «Жаңа құпиясөз» батырмасымен жаңасын беріңіз.</p>
+  </div>
+  {% include "core/panel/_tabs.html" %}
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm flex flex-col">
+    <form method="get" class="p-space-lg flex flex-wrap gap-space-sm">
+      <div class="relative"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+        <input type="search" name="q" value="{{ q }}" placeholder="Аты, логин, пошта…" class="h-10 pl-10 pr-3 rounded-xl bg-surface-container-low outline-none"/></div>
+      <select name="role" onchange="this.form.submit()" class="h-10 px-space-sm rounded-xl bg-surface-container-low">
+        <option value="">Барлық рөлдер</option>
+        {% for v, l in roles %}<option value="{{ v }}" {% if role == v %}selected{% endif %}>{{ l }}</option>{% endfor %}
+      </select>
+    </form>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+          <tr><th class="px-space-lg py-space-sm">Аты-жөні</th><th class="px-space-md py-space-sm">Логин / пошта</th><th class="px-space-md py-space-sm">Сынып</th><th class="px-space-md py-space-sm">Рөлі</th><th class="px-space-md py-space-sm">Құпиясөз</th></tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container-high">
+          {% for p in people %}
+          <tr class="hover:bg-surface-container-low">
+            <td class="px-space-lg py-space-sm font-label-md text-label-md">{{ p.display_name }}{% if p == user %} <span class="text-on-surface-variant">(сіз)</span>{% endif %}</td>
+            <td class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant"><span class="font-label-md text-label-md text-on-surface">{{ p.username }}</span>{% if p.email %}<br>{{ p.email }}{% endif %}{% if p.is_student and p.login_code %}<br>QR коды: <span class="font-mono">{{ p.login_code }}</span>{% endif %}</td>
+            <td class="px-space-md py-space-sm">{{ p.school_class|default:"—" }}</td>
+            <td class="px-space-md py-space-sm">
+              <form method="post" action="{% url 'panel_user_role' p.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}"/>
+                <select name="role" onchange="this.form.submit()" class="h-9 px-space-sm rounded-lg bg-surface-container-low font-label-sm text-label-sm">
+                  {% for v, l in roles %}<option value="{{ v }}" {% if p.role == v %}selected{% endif %}>{{ l }}</option>{% endfor %}
+                </select>
+              </form>
+            </td>
+            <td class="px-space-md py-space-sm">
+              <form method="post" action="{% url 'panel_user_password' p.pk %}" onsubmit="return confirm('{{ p.display_name|escapejs }}: ескі құпиясөз жұмыс істемей қалады. Жаңасын жасау керек пе?')">
+                {% csrf_token %}
+                <button type="submit" class="flex items-center gap-1 px-space-sm h-9 rounded-lg bg-surface-container-high text-primary font-label-sm text-label-sm whitespace-nowrap"><span class="material-symbols-outlined text-[18px]">key</span>Жаңа құпиясөз</button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="px-space-lg py-space-xl text-center text-on-surface-variant">Ешкім табылмады.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

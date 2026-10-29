@@ -1,0 +1,14 @@
+{% load static %}<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  html, body { margin: 0; padding: 0; }
+  body { overscroll-behavior: none; }
+  .fill-icon { font-variation-settings: 'FILL' 1; }
+  @media print { .no-print { display: none !important; } .print-reset { padding: 0 !important; margin: 0 !important; } }
+</style>
+{# Tailwind Play CDN: fine for development; build CSS with the Tailwind CLI before production. #}
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="{% static 'core/js/tailwind-config.js' %}"></script>
+<script src="{% static 'core/js/password-toggle.js' %}" defer></script>

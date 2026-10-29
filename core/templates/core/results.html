@@ -1,0 +1,42 @@
+{% extends "core/base.html" %}{% load qazaq %}
+{% block title %}Нәтижелер — {{ student.display_name }}{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-xl">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-space-md">
+    <div>
+      <h1 class="font-headline-lg text-headline-lg">{% if user == student %}Менің нәтижелерім{% else %}{{ student.display_name }} — нәтижелер{% endif %}</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant">{{ student.school_class|default:"Сыныпсыз" }} • Барлығы {{ s.count }} оқу • Норма: {{ s.norm_low }}–{{ s.norm_high }} сөз/мин</p>
+    </div>
+    <a href="{% url 'student_report' student.pk %}" class="flex items-center gap-space-xs px-space-lg py-space-sm rounded-xl bg-surface-container-high text-primary font-label-md text-label-md w-fit"><span class="material-symbols-outlined">print</span>Есепті басып шығару (PDF)</a>
+  </div>
+
+  <div class="bg-surface-container-lowest p-space-xl rounded-xl shadow-sm flex flex-col gap-space-lg">
+    <div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary">monitoring</span><h2 class="font-headline-sm text-headline-sm">Жылдамдық динамикасы</h2></div>
+    {% include "core/_speed_chart.html" with chart=s.chart %}
+  </div>
+
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-x-auto">
+    <table class="w-full text-left">
+      <thead class="bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <tr><th class="px-space-lg py-space-md">Мәтін</th><th class="px-space-lg py-space-md">Күні</th><th class="px-space-lg py-space-md">Жылдамдық</th><th class="px-space-lg py-space-md">Дәлдік</th><th class="px-space-lg py-space-md">Уақыт</th><th class="px-space-lg py-space-md">Деңгей</th><th class="px-space-lg py-space-md">Баға</th><th></th></tr>
+      </thead>
+      <tbody class="divide-y divide-surface-container-high">
+        {% for r in s.sessions %}{% with level=r.level %}
+        <tr class="hover:bg-surface-container-low">
+          <td class="px-space-lg py-space-md font-label-md text-label-md">«{{ r.text.title }}»</td>
+          <td class="px-space-lg py-space-md font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">{{ r.created_at|when }}</td>
+          <td class="px-space-lg py-space-md font-label-md text-label-md whitespace-nowrap">{{ r.wpm|num }} сөз/мин</td>
+          <td class="px-space-lg py-space-md font-label-md text-label-md">{{ r.accuracy|num }}%</td>
+          <td class="px-space-lg py-space-md font-body-sm text-body-sm">{{ r.duration_display }}</td>
+          <td class="px-space-lg py-space-md"><span class="px-space-sm py-0.5 rounded-full font-label-sm text-label-sm whitespace-nowrap {{ level.1|tone_classes }}">{% if r.status == 'review' %}Тексеруде{% else %}{{ level.0 }}{% endif %}</span></td>
+          <td class="px-space-lg py-space-md">{% include "core/_mark.html" with session=r %}{% if not r.mark %}<span class="text-on-surface-variant">—</span>{% endif %}</td>
+          <td class="px-space-lg py-space-md"><a href="{{ r.get_absolute_url }}" class="text-primary material-symbols-outlined" title="Толығырақ">visibility</a></td>
+        </tr>
+        {% endwith %}{% empty %}
+        <tr><td colspan="7" class="px-space-lg py-space-xl text-center text-on-surface-variant">Әзірге оқу жоқ.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

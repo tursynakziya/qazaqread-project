@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+{% include "core/_head.html" %}
+<title>{{ title }} — QazaqRead</title>
+<style type="text/tailwindcss">
+  .auth-card input:not([type=checkbox]) { @apply w-full px-4 py-2 rounded-xl bg-surface-container-low border border-outline-variant focus:border-primary outline-none; }
+</style>
+</head>
+<body class="bg-surface font-body-md text-body-md text-on-surface antialiased min-h-screen flex items-center justify-center p-space-md">
+<div class="auth-card w-full max-w-md bg-surface-container-lowest rounded-2xl shadow-xl p-space-xl flex flex-col gap-space-lg">
+  <a href="{% url 'login' %}" class="flex items-center gap-space-sm">
+    <span class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary"><span class="material-symbols-outlined">menu_book</span></span>
+    <span class="font-headline-sm text-headline-sm text-primary font-bold">QazaqRead</span>
+  </a>
+  <h1 class="font-headline-md text-headline-md text-on-surface font-bold">{{ title }}</h1>

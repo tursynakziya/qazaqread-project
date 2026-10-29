@@ -1,0 +1,18 @@
+{% extends "core/base.html" %}
+{% block title %}Мәтінді жою{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto mt-space-xl bg-surface-container-lowest rounded-2xl shadow-sm p-space-xl flex flex-col gap-space-md">
+  <span class="w-12 h-12 rounded-xl bg-error-container text-error flex items-center justify-center"><span class="material-symbols-outlined">delete</span></span>
+  <h1 class="font-headline-md text-headline-md">«{{ text.title }}» мәтінін жоясыз ба?</h1>
+  <p class="text-on-surface-variant">Бұл әрекетті қайтару мүмкін емес. Мәтінмен бірге мыналар да жойылады:</p>
+  <ul class="list-disc pl-space-lg text-on-surface">
+    <li>{{ questions }} тест сұрағы</li>
+    <li>{{ sessions }} оқу сессиясы (оқушылардың нәтижелері мен аудиожазбалары)</li>
+  </ul>
+  <form method="post" class="flex justify-end gap-space-sm">
+    {% csrf_token %}
+    <a href="{% url 'panel_dashboard' %}" class="px-space-lg py-space-sm rounded-xl bg-surface-container-low font-label-md text-label-md">Болдырмау</a>
+    <button class="px-space-lg py-space-sm rounded-xl bg-error text-on-error font-label-md text-label-md">Иә, жою</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+db.sqlite3
+db.sqlite3.bak-*
+media/
+staticfiles/
+test_media_tmp/
+.env
+.vscode/
+.idea/
+
+# speech models (download, see README)
+models/
+
+# data exports (contain password hashes)
+backup/

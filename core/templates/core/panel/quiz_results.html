@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}{% load qazaq %}
+{% block title %}Тест нәтижелері{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-xl">
+  <div>
+    <h1 class="font-headline-lg text-headline-lg">Тест нәтижелері</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant">Оқушылардың мәтінді түсіну тестінен алған соңғы нәтижелері.</p>
+  </div>
+  {% include "core/panel/_tabs.html" %}
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-x-auto">
+    <table class="w-full text-left">
+      <thead class="bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <tr><th class="px-space-lg py-space-sm">Оқушы</th><th class="px-space-md py-space-sm">Сынып</th><th class="px-space-md py-space-sm">Мәтін</th><th class="px-space-md py-space-sm">Күні</th><th class="px-space-md py-space-sm">Нәтиже</th><th></th></tr>
+      </thead>
+      <tbody class="divide-y divide-surface-container-high">
+        {% for a in attempts %}
+        <tr class="hover:bg-surface-container-low">
+          <td class="px-space-lg py-space-sm font-label-md text-label-md">{{ a.student.display_name }}</td>
+          <td class="px-space-md py-space-sm">{{ a.student.school_class|default:"—" }}</td>
+          <td class="px-space-md py-space-sm">«{{ a.text.title }}»</td>
+          <td class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">{{ a.created_at|when }}</td>
+          <td class="px-space-md py-space-sm"><span class="px-space-sm py-0.5 rounded-full font-label-sm text-label-sm {% if a.percent >= 80 %}bg-secondary-container text-on-secondary-container{% elif a.percent >= 50 %}bg-tertiary-fixed text-on-tertiary-fixed{% else %}bg-error-container text-on-error-container{% endif %}">{{ a.correct }}/{{ a.total }} • {{ a.percent }}%</span></td>
+          <td class="px-space-md py-space-sm"><a href="{% url 'quiz_result' a.pk %}" class="material-symbols-outlined text-primary" title="Толығырақ">visibility</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="px-space-lg py-space-xl text-center text-on-surface-variant">Әзірге ешкім тест тапсырмаған.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

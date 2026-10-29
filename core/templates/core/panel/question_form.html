@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block title %}Сұрақты өңдеу{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto flex flex-col gap-space-lg">
+  <a href="{% url 'panel_questions' text.pk %}" class="font-label-md text-label-md text-primary flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[18px]">arrow_back</span>«{{ text.title }}» тесті</a>
+  <h1 class="font-headline-md text-headline-md">Сұрақты өңдеу</h1>
+  <form method="post" class="bg-surface-container-lowest rounded-xl shadow-sm p-space-xl flex flex-col gap-space-md">
+    {% include "core/panel/_question_fields.html" %}
+    <div class="flex justify-end gap-space-sm">
+      <a href="{% url 'panel_questions' text.pk %}" class="px-space-lg py-space-sm rounded-xl bg-surface-container-low font-label-md text-label-md">Болдырмау</a>
+      <button type="submit" class="px-space-lg py-space-sm rounded-xl bg-primary text-on-primary font-label-md text-label-md">Сақтау</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "core/base.html" %}{% load static qazaq %}
+{% block title %}Дауыстап оқу: {{ text.title }}{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-lg max-w-6xl mx-auto">
+  {% if reader %}
+  <a href="{{ lesson.get_absolute_url }}" class="font-label-md text-label-md text-primary flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[18px]">arrow_back</span>{{ lesson.school_class }} — сынып тізімі</a>
+  <div class="rounded-xl bg-secondary-container text-on-secondary-container p-space-lg flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+    <div class="flex items-center gap-space-md">
+      <span class="w-14 h-14 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-headline-sm text-headline-sm shrink-0">{{ reader.initials }}</span>
+      <div class="flex flex-col">
+        <span class="font-label-md text-label-md">Кезек: {{ position }}/{{ total }}</span>
+        <span class="font-headline-md text-headline-md">{{ reader.last_name }} {{ reader.first_name }}</span>
+      </div>
+    </div>
+    <span class="font-body-sm text-body-sm">Нәтиже осы оқушының кабинетіне сақталады.</span>
+  </div>
+  {% else %}
+  <nav class="flex items-center gap-space-xs font-label-sm text-label-sm text-on-surface-variant">
+    <a href="{% url 'student_dashboard' %}" class="hover:text-primary">Басты бет</a><span class="material-symbols-outlined text-[16px]">chevron_right</span>
+    <a href="{% url 'library' %}" class="hover:text-primary">Кітапхана</a><span class="material-symbols-outlined text-[16px]">chevron_right</span>
+    <span class="text-on-surface">Дауыстап оқу</span>
+  </nav>
+  {% endif %}
+
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-space-md">
+    <div class="flex flex-col gap-space-xs">
+      <span class="inline-flex items-center gap-space-xs px-space-md py-1 rounded-full bg-secondary-container text-on-secondary-container w-fit font-label-sm text-label-sm">{{ text.grade }}-сынып нормасы: {{ norm_low }}–{{ norm_high }} сөз/мин{% if assignment %} • Мұғалім тапсырмасы{% endif %}</span>
+      <h1 class="font-headline-lg text-headline-lg">«{{ text.title }}»</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant">Мәтінді анық әрі асықпай дауыстап оқы. Оқуға <b>1 минут</b> беріледі — уақыт біткенде жазу өзі тоқтайды, сосын 1 минутта қанша сөз дұрыс оқығаның шығады.</p>
+    </div>
+    <div class="flex items-center gap-space-xs bg-surface-container-low rounded-full p-1">
+      <span class="material-symbols-outlined text-on-surface-variant px-space-xs">format_size</span>
+      <button type="button" id="font-dec" class="px-space-sm py-1 rounded-full hover:bg-surface-container-high font-label-md text-label-md">A-</button>
+      <span id="font-label" class="px-space-sm font-label-sm text-label-sm">100%</span>
+      <button type="button" id="font-inc" class="px-space-sm py-1 rounded-full hover:bg-surface-container-high font-label-md text-label-md">A+</button>
+    </div>
+  </div>
+
+  <div id="support-warning" class="hidden p-space-md rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex items-start gap-space-sm">
+    <span class="material-symbols-outlined">info</span>
+    <span class="font-body-sm text-body-sm" id="support-warning-text">Сөйлеуді тану қазір қолжетімсіз. Оқуыңыз бәрібір жазылады, нәтижені мұғалім тыңдап тексереді.</span>
+  </div>
+  <div id="mic-error" class="hidden p-space-md rounded-xl bg-error-container text-on-error-container flex items-start gap-space-sm">
+    <span class="material-symbols-outlined">mic_off</span>
+    <span class="font-body-sm text-body-sm" id="mic-error-text">Микрофонға рұқсат берілмеді. Браузердің мекенжай жолындағы 🔒 белгісін басып, микрофонға рұқсат беріңіз.</span>
+  </div>
+
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-space-md">
+    <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-1">
+      <span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-space-xs">Қалған уақыт <span id="rec-badge" class="hidden px-space-xs rounded text-[11px] font-semibold bg-error-container text-on-error-container">REC</span></span>
+      <span id="timer" class="font-headline-md text-headline-md tabular-nums">01:00</span>
+      <div class="w-full h-1.5 rounded-full bg-surface-container-high overflow-hidden"><div id="time-bar" class="h-full bg-primary transition-all" style="width:100%"></div></div>
+    </div>
+    <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-1">
+      <span class="font-label-sm text-label-sm text-on-surface-variant">Оқылған сөздер</span>
+      <span class="font-headline-md text-headline-md tabular-nums"><span id="read-count">0</span> / {{ text.word_count }}</span>
+      <span class="font-label-sm text-label-sm flex gap-space-sm"><span class="text-green-700">✓ <span id="ok-count">0</span></span><span class="text-yellow-700">✗ <span id="err-count">0</span></span></span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-1">
+      <span class="font-label-sm text-label-sm text-on-surface-variant">Ағымдағы қарқын</span>
+      <span class="font-headline-md text-headline-md tabular-nums"><span id="live-wpm">—</span> <span class="font-label-sm text-label-sm text-on-surface-variant">сөз/мин</span></span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-1">
+      <span class="font-label-sm text-label-sm text-on-surface-variant">Дауыс деңгейі</span>
+      <div class="h-8 flex items-end gap-1" id="level-bars">{% for i in "12345678" %}<span class="w-1.5 bg-secondary rounded-full h-1 transition-all duration-100"></span>{% endfor %}</div>
+    </div>
+  </div>
+
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md">
+    <span id="status" class="font-label-md text-label-md text-on-surface-variant flex items-center gap-space-xs"><span class="material-symbols-outlined text-[20px]">mic</span>Дайын болсаң, «Оқуды бастау» батырмасын бас.</span>
+    <div class="flex flex-wrap items-center gap-space-sm">
+      <button type="button" id="btn-start" class="flex items-center gap-space-xs px-space-xl py-space-sm rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg"><span class="material-symbols-outlined fill-icon">mic</span>Оқуды бастау</button>
+      <button type="button" id="btn-restart" class="hidden flex items-center gap-space-xs px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container-high font-label-md text-label-md"><span class="material-symbols-outlined">refresh</span>Қайта бастау</button>
+      <button type="button" id="btn-pause" class="hidden flex items-center gap-space-xs px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container-high font-label-md text-label-md"><span class="material-symbols-outlined" id="pause-icon">pause</span><span id="pause-text">Кідірту</span></button>
+      <button type="button" id="btn-finish" class="hidden flex items-center gap-space-xs px-space-lg py-space-sm rounded-xl bg-secondary hover:bg-on-secondary-container text-on-secondary font-label-md text-label-md"><span class="material-symbols-outlined">check_circle</span>Оқуды аяқтау</button>
+    </div>
+  </div>
+
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg md:p-space-2xl flex flex-col gap-space-md">
+    <div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+      <span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px]">auto_stories</span>Мәтінді ретпен оқы — дұрыс сөздер жасыл, қате сөздер сары болып жанады</span>
+      <span class="hidden sm:flex items-center gap-space-md">
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>Дұрыс</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>Қате</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-primary"></span>Келесі сөз</span>
+      </span>
+    </div>
+    <article id="passage" class="font-reader-md-mobile text-reader-md-mobile md:font-reader-lg md:text-reader-lg leading-[2.1] text-on-surface">
+      {% for token, idx in text.tokens %}{% if idx is not None %}<span class="word rounded px-0.5 transition-colors" data-i="{{ idx }}">{{ token }}</span>{% else %}{{ token|linebreaksbr }}{% endif %}{% endfor %}
+    </article>
+    <div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden"><div id="progress" class="h-full bg-secondary transition-all" style="width:0%"></div></div>
+    <div id="heard-box" class="hidden flex items-start gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+      <span class="material-symbols-outlined text-[18px]">hearing</span>
+      <span>Жүйе естіген: <span id="heard" class="text-on-surface">…</span></span>
+    </div>
+  </div>
+
+  <div class="p-space-lg rounded-xl bg-surface-container-low flex items-start gap-space-sm">
+    <span class="material-symbols-outlined text-tertiary">lightbulb</span>
+    <p class="font-body-sm text-body-sm text-on-surface-variant">Үтір мен нүктеге келгенде сәл кідіріп, дем ал. Қателессең, сөзді қайта оқы — жүйе оны ескереді.</p>
+  </div>
+</div>
+
+<div id="uploading" class="hidden fixed inset-0 z-[60] bg-inverse-surface/60 backdrop-blur-sm flex items-center justify-center">
+  <div class="bg-surface-container-lowest rounded-2xl p-space-xl flex flex-col items-center gap-space-md shadow-xl">
+    <span class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></span>
+    <span class="font-label-lg text-label-lg">Оқуың талдануда…</span>
+  </div>
+</div>
+
+<form id="submit-form" method="post" action="{{ submit_url }}" class="hidden">
+  {% csrf_token %}
+  {% if assignment %}<input type="hidden" name="assignment" value="{{ assignment.pk }}"/>{% endif %}
+</form>
+{{ text.words|json_script:"text-words" }}
+{{ server_speech|json_script:"server-speech" }}
+{{ reading_seconds|json_script:"reading-seconds" }}
+<span id="live-url" data-url="{% url 'live_recognize' text.pk %}" hidden></span>
+{% endblock %}
+{% block scripts %}<script src="{% static 'core/js/reading.js' %}"></script>{% endblock %}

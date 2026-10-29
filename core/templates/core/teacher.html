@@ -1,0 +1,135 @@
+{% extends "core/base.html" %}{% load qazaq %}
+{% block title %}Мұғалім кабинеті{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-xl">
+  <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-space-md">
+    <div class="flex flex-col gap-space-xs">
+      <span class="font-label-sm text-label-sm text-on-surface-variant">Педагог кеңістігі • {{ current.academic_year }} оқу жылы</span>
+      <h1 class="font-headline-lg text-headline-lg">Мұғалім кабинеті</h1>
+      <div class="flex items-center gap-space-sm flex-wrap">
+        <span class="font-body-md text-body-md text-on-surface-variant">Сынып:</span>
+        {% for c in classes %}
+        <a href="?class={{ c.pk }}" class="px-space-md py-space-xs rounded-full font-label-sm text-label-sm {% if c == current %}bg-primary text-on-primary{% else %}bg-surface-container-low hover:bg-surface-container-high{% endif %}">{{ c }}</a>
+        {% endfor %}
+        <a href="{% url 'class_create' %}" class="px-space-md py-space-xs rounded-full font-label-sm text-label-sm text-primary hover:bg-surface-container-low">+ Сынып</a>
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-space-sm">
+      <a href="{% url 'export_csv' %}" class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl bg-surface-container-high text-primary font-label-md text-label-md"><span class="material-symbols-outlined">download</span>Excel (CSV)</a>
+      <a href="{% url 'student_add' %}" class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl bg-surface-container-high text-primary font-label-md text-label-md"><span class="material-symbols-outlined">person_add</span>Оқушыны қосу</a>
+      <a href="{% url 'assign_text' %}" class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl bg-primary text-on-primary font-label-md text-label-md"><span class="material-symbols-outlined">assignment_add</span>Мәтін тағайындау</a>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-lg">
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-xs">
+      <span class="font-label-md text-label-md text-on-surface-variant flex justify-between">Оқушылар саны<span class="material-symbols-outlined text-primary">groups</span></span>
+      <span class="font-display-lg text-display-lg font-bold">{{ summary.students }}</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">{{ current }} сыныбы</span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-xs">
+      <span class="font-label-md text-label-md text-on-surface-variant flex justify-between">Оқу сессиялары<span class="material-symbols-outlined text-secondary">record_voice_over</span></span>
+      <span class="font-display-lg text-display-lg font-bold">{{ summary.sessions }}</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Осы аптада {{ summary.week_sessions }}{% if summary.week_growth is not None %} ({{ summary.week_growth|signed }}%){% endif %}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-xs">
+      <span class="font-label-md text-label-md text-on-surface-variant flex justify-between">Орташа жылдамдық<span class="material-symbols-outlined text-tertiary">speed</span></span>
+      <span class="font-display-lg text-display-lg font-bold">{{ summary.avg_wpm|num:1 }} <span class="font-label-md text-label-md text-on-surface-variant">сөз/мин</span></span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Норма: {{ summary.norm_low }}–{{ summary.norm_high }}{% if summary.sessions %} ({{ summary.above_norm|signed }}){% endif %}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-xs">
+      <span class="font-label-md text-label-md text-on-surface-variant flex justify-between">Орташа дәлдік<span class="material-symbols-outlined text-primary-container">spellcheck</span></span>
+      <span class="font-display-lg text-display-lg font-bold">{{ summary.avg_accuracy|num:1 }}%</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Барлық сессиялар бойынша</span>
+    </div>
+  </div>
+
+  <div class="rounded-xl bg-gradient-to-r from-secondary to-on-secondary-container text-on-secondary p-space-xl flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg">
+    <div class="flex flex-col gap-space-xs">
+      <span class="font-headline-sm text-headline-sm flex items-center gap-space-xs"><span class="material-symbols-outlined">groups</span>Сыныпта минуттық оқу</span>
+      <span class="font-body-md text-body-md opacity-90">Оқушылар сіздің компьютеріңізде тізім бойынша кезекпен 1 минут оқиды. Нәтиже әр оқушының кабинетіне сақталады, соңында баға қоясыз.</span>
+      {% if lessons %}<div class="flex flex-wrap gap-space-sm mt-space-xs">{% for l in lessons %}<a href="{{ l.get_absolute_url }}" class="px-space-md py-space-xs rounded-full bg-on-secondary/15 hover:bg-on-secondary/25 font-label-sm text-label-sm">{{ l.created_at|date:"d.m" }} • «{{ l.text.title }}» • {{ l.n_read }}/{{ summary.students }}</a>{% endfor %}</div>{% endif %}
+    </div>
+    <a href="{% url 'lesson_create' %}?class={{ current.pk }}" class="shrink-0 flex items-center gap-space-sm px-space-xl py-space-md bg-on-secondary text-secondary rounded-xl font-label-lg text-label-lg shadow-lg"><span class="material-symbols-outlined fill-icon">play_arrow</span>Сабақты бастау</a>
+  </div>
+
+  {% if review %}
+  <div class="p-space-lg rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex flex-col gap-space-sm">
+    <span class="font-label-lg text-label-lg flex items-center gap-space-xs"><span class="material-symbols-outlined">hearing</span>Тексеруді күтетін оқулар ({{ review|length }})</span>
+    <span class="font-body-sm text-body-sm">Бұл оқуларда дауыс автоматты түрде танылмады. Аудионы тыңдап, сөздерді белгілеңіз.</span>
+    <div class="flex flex-wrap gap-space-sm">{% for r in review %}<a href="{{ r.get_absolute_url }}" class="px-space-md py-space-xs rounded-full bg-surface-container-lowest font-label-sm text-label-sm">{{ r.student.display_name }} — «{{ r.text.title }}»</a>{% endfor %}</div>
+  </div>
+  {% endif %}
+
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-space-xl">
+    <div class="xl:col-span-8 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col">
+      <form method="get" class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+        <h2 class="font-headline-sm text-headline-sm">Сынып оқушылары <span class="text-on-surface-variant font-label-md text-label-md">{{ rows|length }}</span></h2>
+        <div class="flex gap-space-sm">
+          <div class="relative"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+            <input type="search" name="q" value="{{ q }}" placeholder="Оқушыны іздеу…" class="h-10 pl-10 pr-3 rounded-xl bg-surface-container-low outline-none"/></div>
+          <select name="sort" onchange="this.form.submit()" class="h-10 px-space-sm rounded-xl bg-surface-container-low">
+            <option value="speed" {% if sort == 'speed' %}selected{% endif %}>Жылдамдық бойынша</option>
+            <option value="accuracy" {% if sort == 'accuracy' %}selected{% endif %}>Дәлдік бойынша</option>
+            <option value="name" {% if sort == 'name' %}selected{% endif %}>Аты-жөні бойынша</option>
+          </select>
+        </div>
+      </form>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+            <tr><th class="px-space-lg py-space-sm">Оқушы</th><th class="px-space-md py-space-sm">Соңғы тапсырма</th><th class="px-space-md py-space-sm">Жылдамдық</th><th class="px-space-md py-space-sm">Дәлдік</th><th class="px-space-md py-space-sm">Мәртебе</th><th class="px-space-md py-space-sm">Баға</th><th class="px-space-md py-space-sm">Әрекеттер</th></tr>
+          </thead>
+          <tbody class="divide-y divide-surface-container-high">
+            {% for row in rows %}{% with st=row.student last=row.last %}
+            <tr class="hover:bg-surface-container-low">
+              <td class="px-space-lg py-space-md">
+                <div class="flex items-center gap-space-sm">
+                  <span class="w-9 h-9 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-label-sm text-label-sm">{{ st.initials }}</span>
+                  <span class="flex flex-col"><span class="font-label-md text-label-md">{{ st.display_name }}</span><span class="font-body-sm text-body-sm text-on-surface-variant">Код: {{ st.login_code }}</span></span>
+                </div>
+              </td>
+              <td class="px-space-md py-space-md">{% if last %}<span class="flex flex-col"><span class="font-label-md text-label-md">«{{ last.text.title }}»</span><span class="font-body-sm text-body-sm text-on-surface-variant">{{ last.created_at|when }}</span></span>{% else %}<span class="text-on-surface-variant">—</span>{% endif %}</td>
+              <td class="px-space-md py-space-md font-label-md text-label-md whitespace-nowrap">{% if last %}{{ last.wpm|num }} сөз/мин{% else %}—{% endif %}</td>
+              <td class="px-space-md py-space-md font-label-md text-label-md">{% if last %}{{ last.accuracy|num }}%{% else %}—{% endif %}</td>
+              <td class="px-space-md py-space-md"><span class="px-space-sm py-0.5 rounded-full font-label-sm text-label-sm whitespace-nowrap {{ row.level.1|tone_classes }}">{{ row.level.0 }}</span></td>
+              <td class="px-space-md py-space-md">{% include "core/_mark.html" with session=last %}{% if not last.mark %}<span class="text-on-surface-variant">—</span>{% endif %}</td>
+              <td class="px-space-md py-space-md">
+                <div class="flex items-center gap-space-xs">
+                  {% if last %}<a href="{{ last.get_absolute_url }}" title="Соңғы оқуды тыңдау және тексеру" class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">volume_up</span></a>{% endif %}
+                  <a href="{% url 'student_results' st.pk %}" title="Барлық нәтижелер" class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">visibility</span></a>
+                  <a href="{% url 'student_report' st.pk %}" title="Есеп" class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">description</span></a>
+                </div>
+              </td>
+            </tr>
+            {% endwith %}{% empty %}
+            <tr><td colspan="7" class="px-space-lg py-space-xl text-center text-on-surface-variant">{% if q %}Іздеу бойынша оқушы табылмады.{% else %}Сыныпта әлі оқушы жоқ. <a class="text-primary underline" href="{% url 'student_add' %}">Оқушыны қосу</a>{% endif %}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="xl:col-span-4 flex flex-col gap-space-xl">
+      <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+        <h2 class="font-headline-sm text-headline-sm flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary">history</span>Соңғы оқулар</h2>
+        {% for r in recent %}
+        <a href="{{ r.get_absolute_url }}" class="flex items-center justify-between gap-space-sm p-space-sm rounded-xl hover:bg-surface-container-low">
+          <span class="flex flex-col min-w-0"><span class="font-label-md text-label-md truncate">{{ r.student.display_name }}</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">«{{ r.text.title }}» • {{ r.created_at|when }}</span></span>
+          <span class="font-label-md text-label-md whitespace-nowrap">{{ r.wpm|num }} <span class="text-on-surface-variant font-label-sm text-label-sm">с/м</span></span>
+        </a>
+        {% empty %}<p class="font-body-sm text-body-sm text-on-surface-variant">Әзірге оқу жоқ.</p>{% endfor %}
+      </div>
+      <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+        <h2 class="font-headline-sm text-headline-sm flex items-center gap-space-xs"><span class="material-symbols-outlined text-tertiary">assignment</span>Тапсырмалар</h2>
+        {% for a in assignments %}
+        <div class="flex items-center justify-between gap-space-sm p-space-sm rounded-xl bg-surface-container-low">
+          <span class="font-label-md text-label-md">«{{ a.text.title }}»</span>
+          <span class="font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">{% if a.due_date %}{{ a.due_date|date:"d.m.Y" }} дейін{% else %}мерзімсіз{% endif %} • {{ a.sessions.count }} оқу</span>
+        </div>
+        {% empty %}<p class="font-body-sm text-body-sm text-on-surface-variant">Тапсырма берілмеген. <a class="text-primary underline" href="{% url 'assign_text' %}">Мәтін тағайындау</a></p>{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

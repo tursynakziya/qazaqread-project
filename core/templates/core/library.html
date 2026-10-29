@@ -1,0 +1,63 @@
+{% extends "core/base.html" %}{% load qazaq %}
+{% block title %}Мәтіндер кітапханасы{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-xl">
+  <section class="flex flex-col gap-space-xs">
+    <span class="flex items-center gap-space-xs font-label-sm text-label-sm text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">auto_stories</span>Бастауыш сынып қоржыны / Мәтіндік қор</span>
+    <h1 class="font-headline-lg text-headline-lg">Мәтіндер кітапханасы</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant">Бастауыш сынып оқушыларына арналған көркем, ғылыми-танымдық және тәрбиелік мәтіндер. Жалпы {{ total }} мәтін.</p>
+  </section>
+
+  {% if featured %}
+  <section class="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary-container p-space-xl text-on-primary flex flex-col lg:flex-row gap-space-lg lg:items-center lg:justify-between">
+    <div class="flex flex-col gap-space-sm max-w-3xl">
+      <span class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-on-primary/10 w-fit font-label-sm text-label-sm"><span class="material-symbols-outlined text-[18px]">kid_star</span>Бүгінгі таңдаулы мәтін • {{ featured.grade }}-сынып • {{ featured.get_difficulty_display }}</span>
+      <h2 class="font-headline-lg text-headline-lg">«{{ featured.title }}»</h2>
+      <p class="font-body-md text-body-md text-on-primary-container">{{ featured.body|truncatewords:30 }}</p>
+      <div class="flex flex-wrap gap-space-lg font-label-sm text-label-sm">
+        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">format_size</span>{{ featured.word_count }} сөз</span>
+        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">timer</span>~{{ featured.minutes_estimate|num:1 }} мин</span>
+      </div>
+    </div>
+    {% if user.is_student %}
+    <a href="{% url 'reading' featured.pk %}" class="shrink-0 flex items-center gap-space-sm px-space-xl py-space-md bg-secondary-container text-on-secondary-container rounded-xl font-label-lg text-label-lg shadow-lg"><span class="material-symbols-outlined fill-icon">mic</span>Дауыстап оқуды бастау</a>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <form method="get" class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+    <div class="flex flex-col md:flex-row gap-space-md">
+      <div class="relative flex-1">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+        <input type="search" name="q" value="{{ q }}" placeholder="Мәтін атауы немесе сөз бойынша іздеу…" class="w-full h-11 pl-10 pr-4 rounded-xl bg-surface-container-low outline-none focus:ring-2 focus:ring-primary/20"/>
+      </div>
+      <select name="sort" onchange="this.form.submit()" class="h-11 px-space-md rounded-xl bg-surface-container-low">
+        <option value="popular" {% if sort == 'popular' %}selected{% endif %}>Танымалдығы бойынша</option>
+        <option value="words" {% if sort == 'words' %}selected{% endif %}>Сөз саны бойынша</option>
+        <option value="new" {% if sort == 'new' %}selected{% endif %}>Жаңа қосылғандар</option>
+      </select>
+      <select name="difficulty" onchange="this.form.submit()" class="h-11 px-space-md rounded-xl bg-surface-container-low">
+        <option value="">Күрделілігі: барлығы</option>
+        {% for v, l in difficulties %}<option value="{{ v }}" {% if difficulty == v %}selected{% endif %}>{{ l }}</option>{% endfor %}
+      </select>
+      <button class="h-11 px-space-lg rounded-xl bg-primary text-on-primary font-label-md text-label-md">Іздеу</button>
+    </div>
+    <div class="flex flex-wrap items-center gap-space-sm">
+      <span class="font-label-md text-label-md text-on-surface-variant">Сынып:</span>
+      <input type="hidden" name="grade" value="{{ grade }}" id="grade-input"/>
+      <button type="submit" onclick="document.getElementById('grade-input').value=''" class="px-space-md py-space-xs rounded-full font-label-sm text-label-sm {% if not grade %}bg-primary text-on-primary{% else %}bg-surface-container-low{% endif %}">Барлық сыныптар</button>
+      {% for g in grades %}
+      <button type="submit" onclick="document.getElementById('grade-input').value='{{ g }}'" class="px-space-md py-space-xs rounded-full font-label-sm text-label-sm {% if grade == g|stringformat:'s' %}bg-primary text-on-primary{% else %}bg-surface-container-low{% endif %}">{{ g }}-сынып</button>
+      {% endfor %}
+    </div>
+  </form>
+
+  <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-space-lg">
+    {% for c in cards %}
+      {% include "core/_text_card.html" with text=c.text mine=c.mine %}
+    {% empty %}
+      <div class="col-span-full p-space-xl rounded-xl bg-surface-container-lowest text-center text-on-surface-variant">Сүзгіге сай мәтін табылмады.</div>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

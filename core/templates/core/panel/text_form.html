@@ -1,0 +1,49 @@
+{% extends "core/base.html" %}
+{% block title %}{% if text %}Мәтінді өңдеу{% else %}Жаңа мәтін{% endif %}{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-lg max-w-5xl mx-auto">
+  <a href="{% url 'panel_dashboard' %}" class="font-label-md text-label-md text-primary flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[18px]">arrow_back</span>Әкімші панелі</a>
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-space-md">
+    <div>
+      <h1 class="font-headline-lg text-headline-lg">{% if text %}«{{ text.title }}» — өңдеу{% else %}Жаңа мәтін қосу{% endif %}</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant">Мәтінді сақтағаннан кейін оған тест сұрақтарын қоса аласыз.</p>
+    </div>
+    {% if text %}<a href="{% url 'panel_questions' text.pk %}" class="flex items-center gap-space-xs px-space-lg py-space-sm rounded-xl bg-surface-container-high text-primary font-label-md text-label-md w-fit"><span class="material-symbols-outlined">quiz</span>Тест сұрақтары ({{ text.question_count }})</a>{% endif %}
+  </div>
+
+  <form method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg">
+    {% csrf_token %}
+    <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl shadow-sm p-space-xl flex flex-col gap-space-md">
+      {% with field=form.title %}{% include "core/_field.html" %}{% endwith %}
+      {% with field=form.body %}{% include "core/_field.html" %}{% endwith %}
+      <div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+        <span>Сөз саны: <b id="word-count">0</b></span>
+        <span>Оқу уақыты: ~<b id="read-time">0</b> мин</span>
+      </div>
+    </div>
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-xl flex flex-col gap-space-md h-fit">
+      {% with field=form.grade %}{% include "core/_field.html" %}{% endwith %}
+      {% with field=form.difficulty %}{% include "core/_field.html" %}{% endwith %}
+      <button type="submit" class="w-full h-12 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-space-xs"><span class="material-symbols-outlined">save</span>{% if text %}Сақтау{% else %}Сақтап, тест қосуға өту{% endif %}</button>
+      {% if text %}<a href="{% url 'panel_text_delete' text.pk %}" class="text-center font-label-md text-label-md text-error hover:underline">Мәтінді жою</a>{% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  const NORMS = {1: 27, 2: 45, 3: 55, 4: 68};
+  const body = document.getElementById('{{ form.body.id_for_label }}');
+  const grade = document.getElementById('{{ form.grade.id_for_label }}');
+  function update() {
+    const words = (body.value.match(/[\p{L}\p{N}-]+/gu) || []).filter(w => w.replace(/-/g, '')).length;
+    document.getElementById('word-count').textContent = words;
+    document.getElementById('read-time').textContent = (words / (NORMS[grade.value] || 50)).toFixed(1);
+  }
+  body.addEventListener('input', update);
+  grade.addEventListener('change', update);
+  update();
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends "core/base.html" %}{% load qazaq %}
+{% block title %}Нәтиже: {{ session.text.title }}{% endblock %}
+{% block content %}
+{% with level=session.level %}
+<div class="flex flex-col w-full gap-space-xl max-w-6xl mx-auto">
+  <nav class="flex items-center gap-space-xs font-label-sm text-label-sm text-on-surface-variant">
+    <a href="{% url 'home' %}" class="hover:text-primary">Басты бет</a><span class="material-symbols-outlined text-[16px]">chevron_right</span>
+    <a href="{% if user == session.student %}{% url 'results' %}{% else %}{% url 'student_results' session.student.pk %}{% endif %}" class="hover:text-primary">Нәтижелер</a><span class="material-symbols-outlined text-[16px]">chevron_right</span>
+    <span class="text-on-surface">{{ session.created_at|when }}</span>
+  </nav>
+
+  <div class="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary-container p-space-xl text-on-primary flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-lg">
+    <div class="flex flex-col gap-space-xs">
+      <span class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-on-primary/10 w-fit font-label-sm text-label-sm"><span class="material-symbols-outlined text-[18px]">auto_awesome</span>{% if session.status == 'review' %}Мұғалім тексеруін күтуде{% else %}Сессия сәтті аяқталды{% endif %}</span>
+      <h1 class="font-headline-lg text-headline-lg">Оқу нәтижесі{% if user != session.student %}: {{ session.student.display_name }}{% endif %}</h1>
+      <p class="font-body-lg text-body-lg text-on-primary-container">
+        {% if user == session.student %}{% if level.1 == 'good' %}Жарайсың, {{ user.short_name }}! Әр оқыған сайын тәжірибең арта түседі. 🌟{% else %}Жақсы талпыныс, {{ user.short_name }}! Күн сайын оқысаң, жылдамдығың өседі. 💪{% endif %}{% else %}«{{ session.text.title }}» • {{ session.text.grade }}-сынып{% endif %}
+      </p>
+      <span class="font-label-sm text-label-sm text-on-primary-container">Мәтін: «{{ session.text.title }}» • Норма: {{ session.norm.0 }}–{{ session.norm.1 }} сөз/мин</span>
+    </div>
+    <div class="flex flex-col gap-space-sm shrink-0">
+      {% if session.audio %}<audio controls preload="none" class="max-w-xs" src="{% url 'session_audio' session.pk %}"></audio>{% endif %}
+      {% if user == session.student %}<a href="{% url 'reading' session.text.pk %}" class="flex items-center justify-center gap-space-xs px-space-lg py-space-sm bg-on-primary/10 hover:bg-on-primary/20 rounded-xl font-label-md text-label-md"><span class="material-symbols-outlined">replay</span>Қайта оқу</a>{% endif %}
+    </div>
+  </div>
+
+  {% if session.mark %}
+  <div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-wrap items-center gap-space-md">
+    <span class="w-14 h-14 rounded-full flex items-center justify-center font-headline-md text-headline-md font-bold {% if session.mark == 5 %}bg-green-200 text-green-900{% elif session.mark == 4 %}bg-sky-200 text-sky-900{% elif session.mark == 3 %}bg-yellow-200 text-yellow-900{% else %}bg-red-200 text-red-900{% endif %}">{{ session.mark }}</span>
+    <div class="flex flex-col">
+      <span class="font-label-lg text-label-lg">Мұғалім бағасы: {{ session.get_mark_display }}</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">{% if session.class_reading %}Сыныпта минуттық оқу • {% endif %}{{ session.marked_at|date:"d.m.Y" }}</span>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-space-lg">
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-sm">
+      <span class="font-label-md text-label-md text-on-surface-variant flex items-center justify-between">Оқу жылдамдығы<span class="material-symbols-outlined text-primary">speed</span></span>
+      <span class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg font-bold"><span id="m-wpm">{{ session.wpm|num }}</span> <span class="font-label-md text-label-md text-on-surface-variant">сөз/мин</span></span>
+      <span class="inline-flex w-fit px-space-sm py-0.5 rounded-full font-label-sm text-label-sm {{ level.1|tone_classes }}">{{ level.0 }}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-sm">
+      <span class="font-label-md text-label-md text-on-surface-variant flex items-center justify-between">Дұрыс оқылған сөздер<span class="material-symbols-outlined text-secondary">spellcheck</span></span>
+      <span class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg font-bold"><span id="m-correct">{{ session.words_correct }}</span> <span class="font-label-md text-label-md text-on-surface-variant">/ <span id="m-total">{{ session.words_total }}</span></span></span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">{% if not_reached > 0 %}{{ not_reached }} сөзге жетпеді{% else %}Мәтін толық оқылды{% endif %}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-sm">
+      <span class="font-label-md text-label-md text-on-surface-variant flex items-center justify-between">Оқу дәлдігі<span class="material-symbols-outlined text-tertiary">task_alt</span></span>
+      <span class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg font-bold"><span id="m-acc">{{ session.accuracy|num }}</span>%</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Қате: <span id="m-review">{{ session.words_review }}</span>, өткізілген: <span id="m-skipped">{{ session.words_skipped }}</span></span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-sm">
+      <span class="font-label-md text-label-md text-on-surface-variant flex items-center justify-between">Оқу уақыты<span class="material-symbols-outlined text-primary-container">timer</span></span>
+      <span class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg font-bold">{{ session.duration_display }}</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">{% if previous %}Алдыңғы оқу: {{ previous.wpm|num }} сөз/мин{% else %}Алғашқы оқу{% endif %}</span>
+    </div>
+  </div>
+
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg md:p-space-xl flex flex-col gap-space-lg">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-space-md">
+      <div>
+        <div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary">find_in_page</span><h2 class="font-headline-sm text-headline-sm">Мәтінді тексеру және талдау</h2></div>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">{% if is_teacher %}Сөзді басып, бағасын өзгертіңіз: дұрыс → қате → өткізілген.{% else %}Сөздің үстіне апарсаң, жүйе естіген нұсқасын көресің.{% endif %}</p>
+      </div>
+      <div class="flex flex-wrap gap-space-sm font-label-sm text-label-sm">
+        <span class="flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-low"><span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>Дұрыс</span>
+        <span class="flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-low"><span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>Қате оқылды</span>
+        <span class="flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-low"><span class="w-2.5 h-2.5 rounded-full bg-error"></span>Өткізіп алынған</span>
+        <span class="flex items-center gap-1.5 px-space-sm py-1 rounded-full bg-surface-container-low"><span class="w-2.5 h-2.5 rounded-full bg-outline-variant"></span>Оқылмаған</span>
+      </div>
+    </div>
+    <article id="result-text" class="font-reader-md-mobile text-reader-md-mobile md:font-reader-md md:text-reader-md leading-[2.1]" data-review-url="{% if is_teacher %}{% url 'review_word' session.pk 0 %}{% endif %}">
+      {% for token, w, idx in tokens %}{% if idx is None %}{{ token|linebreaksbr }}{% else %}<span data-i="{{ idx }}" data-status="{{ w.status|default:'none' }}" {% if w.heard and w.status != 'correct' %}title="Аудиода: «{{ w.heard|heard_word }}»"{% elif w.status == 'skipped' %}title="Сөз оқылмай, өткізіп алынды"{% endif %} class="word rounded px-0.5 {% if is_teacher %}cursor-pointer hover:ring-2 hover:ring-primary{% endif %}">{{ token }}</span>{% endif %}{% endfor %}
+    </article>
+    {% if session.transcript %}
+    <details class="bg-surface-container-low rounded-xl p-space-md">
+      <summary class="cursor-pointer font-label-md text-label-md text-on-surface-variant">Жүйе танып алған мәтін</summary>
+      <p class="mt-space-sm font-body-sm text-body-sm text-on-surface-variant">{{ session.transcript|heard }}</p>
+    </details>
+    {% endif %}
+  </div>
+
+  {% if has_quiz %}
+  <div class="rounded-xl shadow-sm p-space-lg md:p-space-xl flex flex-col sm:flex-row sm:items-center justify-between gap-space-md {% if attempt %}bg-surface-container-lowest{% else %}bg-tertiary-fixed text-on-tertiary-fixed{% endif %}">
+    <div class="flex items-center gap-space-md">
+      <span class="w-12 h-12 rounded-xl bg-surface-container-lowest/60 flex items-center justify-center text-tertiary"><span class="material-symbols-outlined">quiz</span></span>
+      <div>
+        <h2 class="font-headline-sm text-headline-sm">Мәтінді түсіну тесті</h2>
+        <p class="font-body-sm text-body-sm">{% if attempt %}Нәтиже: {{ attempt.correct }}/{{ attempt.total }} ({{ attempt.percent }}%){% elif user == session.student %}Мәтінді қаншалықты түсінгеніңді тексер!{% else %}Оқушы тестті әлі тапсырмады.{% endif %}</p>
+      </div>
+    </div>
+    <div class="flex gap-space-sm">
+      {% if attempt %}<a href="{% url 'quiz_result' attempt.pk %}" class="px-space-lg py-space-sm rounded-xl bg-surface-container-high text-primary font-label-md text-label-md">Жауаптарды көру</a>{% endif %}
+      {% if user == session.student %}<a href="{% url 'quiz' session.text.pk %}" class="flex items-center gap-space-xs px-space-xl py-space-sm rounded-xl bg-primary text-on-primary font-label-lg text-label-lg"><span class="material-symbols-outlined">{% if attempt %}replay{% else %}play_arrow{% endif %}</span>{% if attempt %}Қайта тапсыру{% else %}Тест тапсыру{% endif %}</a>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg md:p-space-xl flex flex-col gap-space-md">
+    <div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-secondary">rate_review</span><h2 class="font-headline-sm text-headline-sm">Мұғалім пікірі</h2></div>
+    {% if is_teacher %}
+    <form method="post" action="{% url 'session_comment' session.pk %}" class="flex flex-col gap-space-sm">
+      {% csrf_token %}
+      {{ comment_form.teacher_comment }}
+      <button class="self-end px-space-lg py-space-sm rounded-xl bg-primary text-on-primary font-label-md text-label-md">Сақтау</button>
+    </form>
+    {% elif session.teacher_comment %}
+    <p class="font-body-md text-body-md">{{ session.teacher_comment|linebreaksbr }}</p>
+    {% else %}
+    <p class="font-body-sm text-body-sm text-on-surface-variant">Мұғалім әлі пікір қалдырмады.</p>
+    {% endif %}
+  </div>
+</div>
+{% endwith %}
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  const STYLES = {
+    correct: ['bg-green-200', 'text-green-900'],
+    misread: ['bg-yellow-200', 'text-yellow-900', 'underline', 'decoration-wavy', 'decoration-yellow-600'],
+    skipped: ['bg-error-container', 'line-through', 'text-on-error-container'],
+    none: ['text-outline'],
+  };
+  const ALL = Object.values(STYLES).flat();
+  const article = document.getElementById('result-text');
+  function paint(el) {
+    el.classList.remove(...ALL);
+    el.classList.add(...(STYLES[el.dataset.status] || []));
+  }
+  article.querySelectorAll('.word').forEach(paint);
+
+  const base = article.dataset.reviewUrl;
+  if (!base) return;
+  const csrf = document.cookie.split('; ').find(c => c.startsWith('csrftoken='))?.split('=')[1];
+  const NEXT = { correct: 'misread', misread: 'skipped', skipped: 'correct', none: 'correct' };
+  article.addEventListener('click', async e => {
+    const el = e.target.closest('.word');
+    if (!el) return;
+    const status = NEXT[el.dataset.status];
+    const url = base.replace(/\/word\/0\/$/, `/word/${el.dataset.i}/`);
+    const body = new URLSearchParams({ status });
+    const resp = await fetch(url, { method: 'POST', body, headers: { 'X-CSRFToken': csrf } });
+    if (!resp.ok) return;
+    const d = await resp.json();
+    el.dataset.status = status;
+    paint(el);
+    document.getElementById('m-wpm').textContent = d.wpm;
+    document.getElementById('m-acc').textContent = d.accuracy;
+    document.getElementById('m-correct').textContent = d.correct;
+    document.getElementById('m-total').textContent = d.total;
+    document.getElementById('m-review').textContent = d.review;
+    document.getElementById('m-skipped').textContent = d.skipped;
+  });
+})();
+</script>
+{% endblock %}

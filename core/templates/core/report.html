@@ -1,0 +1,40 @@
+{% load qazaq %}<!DOCTYPE html>
+<html lang="kk">
+<head>
+{% include "core/_head.html" %}
+<title>Есеп — {{ student.display_name }}</title>
+<style>@page { size: A4; margin: 15mm; }</style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-md text-body-md">
+<div class="max-w-3xl mx-auto p-space-xl flex flex-col gap-space-lg print-reset">
+  <div class="no-print flex justify-between">
+    <a href="javascript:history.back()" class="text-primary font-label-md text-label-md">← Артқа</a>
+    <button onclick="window.print()" class="px-space-lg py-space-sm rounded-xl bg-primary text-on-primary font-label-md text-label-md">Басып шығару / PDF сақтау</button>
+  </div>
+  <header class="flex justify-between items-start border-b-2 border-primary pb-space-md">
+    <div>
+      <div class="font-headline-sm text-headline-sm text-primary">QazaqRead</div>
+      <h1 class="font-headline-lg text-headline-lg">Оқу дағдысы бойынша есеп</h1>
+      <p class="text-on-surface-variant">{{ student.display_name }} • {{ student.school_class|default:"Сыныпсыз" }}{% if student.school_name %} • {{ student.school_name }}{% endif %}</p>
+    </div>
+    <span class="font-body-sm text-body-sm text-on-surface-variant">{{ now|date:"d.m.Y" }}</span>
+  </header>
+  <section class="grid grid-cols-4 gap-space-md">
+    <div class="p-space-md rounded-xl bg-surface-container-low"><div class="font-label-sm text-label-sm text-on-surface-variant">Соңғы жылдамдық</div><div class="font-headline-md text-headline-md">{{ s.last.wpm|num|default:"—" }}</div><div class="font-label-sm text-label-sm">сөз/мин</div></div>
+    <div class="p-space-md rounded-xl bg-surface-container-low"><div class="font-label-sm text-label-sm text-on-surface-variant">Норма</div><div class="font-headline-md text-headline-md">{{ s.norm_low }}–{{ s.norm_high }}</div><div class="font-label-sm text-label-sm">сөз/мин</div></div>
+    <div class="p-space-md rounded-xl bg-surface-container-low"><div class="font-label-sm text-label-sm text-on-surface-variant">Орташа дәлдік</div><div class="font-headline-md text-headline-md">{{ s.accuracy|num }}%</div></div>
+    <div class="p-space-md rounded-xl bg-surface-container-low"><div class="font-label-sm text-label-sm text-on-surface-variant">Барлық оқу</div><div class="font-headline-md text-headline-md">{{ s.count }}</div><div class="font-label-sm text-label-sm">{{ s.total_minutes }} мин</div></div>
+  </section>
+  <section><h2 class="font-headline-sm text-headline-sm mb-space-sm">Жылдамдық динамикасы</h2>{% include "core/_speed_chart.html" with chart=s.chart %}</section>
+  <section>
+    <h2 class="font-headline-sm text-headline-sm mb-space-sm">Оқу тарихы</h2>
+    <table class="w-full text-left font-body-sm text-body-sm border-collapse">
+      <thead><tr class="border-b border-outline-variant"><th class="py-1">Күні</th><th>Мәтін</th><th>Жылдамдық</th><th>Дәлдік</th><th>Деңгей</th><th>Баға</th><th>Мұғалім пікірі</th></tr></thead>
+      <tbody>
+        {% for r in s.sessions %}<tr class="border-b border-surface-container-high align-top"><td class="py-1 whitespace-nowrap">{{ r.created_at|date:"d.m.Y" }}</td><td>«{{ r.text.title }}»</td><td>{{ r.wpm|num }}</td><td>{{ r.accuracy|num }}%</td><td>{{ r.level.0 }}</td><td>{{ r.mark|default:"—" }}</td><td>{{ r.teacher_comment }}</td></tr>{% empty %}<tr><td colspan="7" class="py-space-md text-on-surface-variant">Әзірге оқу жоқ.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,170 @@
+{% load static %}<!DOCTYPE html>
+<html lang="kk">
+<head>
+{% include "core/_head.html" %}
+<title>Жүйеге кіру — QazaqRead</title>
+</head>
+<body class="bg-surface font-body-md text-body-md text-on-surface antialiased">
+<header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+  <div class="h-20 w-full px-margin-mobile md:px-margin flex items-center justify-between">
+    <a class="flex items-center gap-space-sm" href="{% url 'login' %}">
+      <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[24px]">menu_book</span></div>
+      <div class="flex flex-col">
+        <span class="font-headline-sm text-headline-sm text-primary font-bold tracking-tight">QazaqRead</span>
+        <span class="hidden sm:inline-block font-label-sm text-label-sm text-on-surface-variant">Қазақша мәтін оқу дағдысын онлайн талдау жүйесі</span>
+      </div>
+    </a>
+    <a href="#method" class="hidden md:inline px-space-md py-space-sm font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-lg">Бағалау әдістемесі</a>
+  </div>
+</header>
+
+<main class="pt-24 pb-space-2xl">
+<div class="w-full max-w-7xl mx-auto px-margin-mobile md:px-gutter lg:px-margin py-space-xl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter lg:gap-space-xl items-start">
+
+  <div class="lg:col-span-6 xl:col-span-7 flex flex-col gap-space-lg lg:pr-space-md">
+    <div class="flex flex-col gap-space-sm">
+      <div class="inline-flex items-center gap-space-xs px-space-md py-1 rounded-full bg-surface-container-high w-fit">
+        <span class="material-symbols-outlined text-[18px] text-primary fill-icon">verified</span>
+        <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Ұлттық білім беру инновациясы</span>
+      </div>
+      <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight leading-tight">Қазақ тілінде мәнерлеп және шапшаң оқуды бірге дамытайық!</h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">Балалардың оқу жылдамдығы мен дәлдігін дауыс тану арқылы өлшейтін жүйе.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md">
+      <div class="flex flex-col gap-space-sm p-space-md rounded-2xl bg-surface-container-lowest shadow-sm">
+        <div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[26px]">mic_external_on</span></div>
+        <span class="font-label-lg text-label-lg font-bold text-on-surface">Дауыс тану</span>
+        <span class="font-body-sm text-body-sm text-on-surface-variant leading-snug">Оқушы оқыған әр сөз мәтінмен салыстырылады.</span>
+      </div>
+      <div class="flex flex-col gap-space-sm p-space-md rounded-2xl bg-surface-container-lowest shadow-sm">
+        <div class="w-12 h-12 rounded-xl bg-secondary-container/40 flex items-center justify-center text-secondary"><span class="material-symbols-outlined text-[26px]">monitoring</span></div>
+        <span class="font-label-lg text-label-lg font-bold text-on-surface">Көрнекі статистика</span>
+        <span class="font-body-sm text-body-sm text-on-surface-variant leading-snug">Оқу қарқыны, дәлдік және апталық серпін.</span>
+      </div>
+      <div class="flex flex-col gap-space-sm p-space-md rounded-2xl bg-surface-container-lowest shadow-sm">
+        <div class="w-12 h-12 rounded-xl bg-surface-variant flex items-center justify-center text-primary-container"><span class="material-symbols-outlined text-[26px]">diversity_3</span></div>
+        <span class="font-label-lg text-label-lg font-bold text-on-surface">3 рөлге арналған</span>
+        <span class="font-body-sm text-body-sm text-on-surface-variant leading-snug">Оқушыға тапсырма, ата-анаға есеп, мұғалімге басқару.</span>
+      </div>
+    </div>
+    <div id="method" class="p-space-lg rounded-2xl bg-surface-container-low flex flex-col gap-space-sm">
+      <h2 class="font-headline-sm text-headline-sm text-on-surface">Бағалау әдістемесі</h2>
+      <p class="font-body-md text-body-md text-on-surface-variant">Оқушы мәтінді дауыстап оқиды. Жүйе дауысты танып, әр сөзді мәтінмен салыстырады:</p>
+      <ul class="font-body-sm text-body-sm text-on-surface-variant list-disc pl-space-lg flex flex-col gap-1">
+        <li><b class="text-on-surface">Жылдамдық</b> — минутына дұрыс оқылған сөз саны.</li>
+        <li><b class="text-on-surface">Дәлдік</b> — оқылған сөздердің ішіндегі дұрыс сөздердің үлесі.</li>
+        <li>Нормалар: 1-сынып 25–30, 2-сынып 40–50, 3-сынып 50–60, 4-сынып 60–75 сөз/мин.</li>
+        <li>Мұғалім аудиожазбаны тыңдап, кез келген сөздің бағасын түзете алады.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 xl:col-span-5 w-full">
+    <div class="bg-surface-container-lowest rounded-2xl shadow-xl p-space-lg sm:p-space-xl flex flex-col gap-space-lg">
+      {% if messages %}{% for message in messages %}<div class="px-space-md py-space-sm rounded-xl bg-secondary-container text-on-secondary-container font-label-md text-label-md">{{ message }}</div>{% endfor %}{% endif %}
+      <div class="flex items-center p-1 bg-surface-container-low rounded-xl" role="tablist">
+        <button data-tab="login" type="button" class="auth-tab w-1/2 py-space-sm rounded-lg font-label-lg text-label-lg">Жүйеге кіру</button>
+        <button data-tab="register" type="button" class="auth-tab w-1/2 py-space-sm rounded-lg font-label-lg text-label-lg">Тіркелу</button>
+      </div>
+
+      <div data-panel="login" class="flex flex-col gap-space-md">
+        <div>
+          <h2 class="font-headline-md text-headline-md text-on-surface font-bold">Платформаға қош келдіңіз!</h2>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Жалғастыру үшін мәліметтеріңізді енгізіңіз.</p>
+        </div>
+        <form method="post" action="{% url 'login' %}" class="flex flex-col gap-space-md">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}"/>
+          {% for error in form.non_field_errors %}<div class="px-space-md py-space-sm rounded-xl bg-error-container text-on-error-container font-body-sm text-body-sm">{{ error }}</div>{% endfor %}
+          {% with field=form.username %}{% include "core/_field.html" %}{% endwith %}
+          {% with field=form.password %}{% include "core/_field.html" %}{% endwith %}
+          <div class="flex items-center justify-between">
+            {% with field=form.remember %}{% include "core/_field.html" %}{% endwith %}
+            <a href="{% url 'password_reset' %}" class="font-label-sm text-label-sm text-primary hover:underline">Құпиясөзді ұмыттыңыз ба?</a>
+          </div>
+          <button type="submit" class="w-full h-12 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-space-sm transition-colors">Жүйеге кіру <span class="material-symbols-outlined text-[20px]">arrow_forward</span></button>
+        </form>
+        <div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm"><span class="h-px flex-1 bg-outline-variant"></span>немесе<span class="h-px flex-1 bg-outline-variant"></span></div>
+        <form method="post" action="{% url 'qr_code_login' %}" class="flex flex-col gap-space-sm">
+          {% csrf_token %}
+          <label class="font-label-md text-label-md text-on-surface flex items-center gap-space-xs" for="qr-code"><span class="material-symbols-outlined text-[20px] text-primary">qr_code_scanner</span>Оқушының QR-картасымен кіру</label>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Картаны телефон камерасымен сканерлеңіз немесе картадағы кодты енгізіңіз.</p>
+          <div class="flex gap-space-sm">
+            <input id="qr-code" name="code" required maxlength="16" placeholder="мысалы: 3f9a1c2b7d" class="flex-1 px-space-md py-space-sm rounded-xl bg-surface-container-low border border-outline-variant focus:border-primary outline-none"/>
+            <button type="submit" class="px-space-lg rounded-xl bg-secondary-container text-on-secondary-container font-label-md text-label-md hover:bg-secondary-fixed">Кіру</button>
+          </div>
+        </form>
+      </div>
+
+      <div data-panel="register" class="flex flex-col gap-space-md">
+        <div>
+          <h2 class="font-headline-md text-headline-md text-on-surface font-bold">Жаңа аккаунт жасау</h2>
+          <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Рөліңізді таңдап, мәліметтеріңізді енгізіңіз.</p>
+        </div>
+        <form method="post" action="{% url 'register' %}" class="flex flex-col gap-space-md">
+          {% csrf_token %}
+          {% for error in register_form.non_field_errors %}<div class="px-space-md py-space-sm rounded-xl bg-error-container text-on-error-container font-body-sm text-body-sm">{{ error }}</div>{% endfor %}
+          <fieldset class="flex flex-col gap-1.5">
+            <legend class="font-label-md text-label-md text-on-surface mb-1.5">{{ register_form.role.label }}</legend>
+            <div class="grid grid-cols-3 gap-space-sm">
+              {% for value, label in register_form.fields.role.choices %}
+              <label class="cursor-pointer">
+                <input type="radio" name="role" value="{{ value }}" class="peer sr-only" {% if register_form.role.value == value %}checked{% endif %}/>
+                <span class="flex flex-col items-center gap-1 p-space-sm rounded-xl border-2 border-surface-container-high peer-checked:border-primary peer-checked:bg-primary-fixed font-label-md text-label-md">
+                  <span class="material-symbols-outlined text-[24px] text-primary">{% if value == 'student' %}school{% elif value == 'parent' %}family_restroom{% else %}supervisor_account{% endif %}</span>{{ label }}
+                </span>
+              </label>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <div class="grid grid-cols-2 gap-space-md">
+            {% with field=register_form.first_name %}{% include "core/_field.html" %}{% endwith %}
+            {% with field=register_form.last_name %}{% include "core/_field.html" %}{% endwith %}
+          </div>
+          {% with field=register_form.school_name %}{% include "core/_field.html" %}{% endwith %}
+          <div id="class-field">{% with field=register_form.school_class %}{% include "core/_field.html" %}{% endwith %}</div>
+          {% with field=register_form.email %}{% include "core/_field.html" %}{% endwith %}
+          {% with field=register_form.password %}{% include "core/_field.html" %}{% endwith %}
+          {% with field=register_form.agree %}{% include "core/_field.html" %}{% endwith %}
+          <button type="submit" class="w-full h-12 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-space-sm transition-colors">Аккаунт жасау <span class="material-symbols-outlined text-[20px]">how_to_reg</span></button>
+        </form>
+      </div>
+
+      <p class="text-center font-body-sm text-body-sm text-on-surface-variant">Көмек керек пе? <a class="text-primary hover:underline" href="mailto:support@qazaqread.kz">support@qazaqread.kz</a></p>
+    </div>
+  </div>
+</div>
+</div>
+</main>
+
+<script>
+(function () {
+  const tabs = document.querySelectorAll('.auth-tab');
+  const panels = document.querySelectorAll('[data-panel]');
+  function show(name) {
+    tabs.forEach(t => {
+      const on = t.dataset.tab === name;
+      t.classList.toggle('bg-surface-container-lowest', on);
+      t.classList.toggle('text-primary', on);
+      t.classList.toggle('shadow-sm', on);
+      t.classList.toggle('text-on-surface-variant', !on);
+      t.setAttribute('aria-selected', on);
+    });
+    panels.forEach(p => p.classList.toggle('hidden', p.dataset.panel !== name));
+  }
+  tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
+  show('{{ active_tab|default:"login" }}');
+
+  // The class picker only matters for students.
+  const classField = document.getElementById('class-field');
+  function syncRole() {
+    const role = document.querySelector('input[name="role"]:checked');
+    classField.classList.toggle('hidden', role && role.value !== 'student');
+  }
+  document.querySelectorAll('input[name="role"]').forEach(r => r.addEventListener('change', syncRole));
+  syncRole();
+})();
+</script>
+</body>
+</html>

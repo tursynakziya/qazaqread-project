@@ -1,0 +1,69 @@
+{% extends "core/base.html" %}
+{% block title %}Әкімші панелі{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-xl">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-space-md">
+    <div>
+      <span class="font-label-sm text-label-sm text-on-surface-variant">QazaqRead басқару орталығы</span>
+      <h1 class="font-headline-lg text-headline-lg">Әкімші панелі</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant">Мәтіндерді қосыңыз, өңдеңіз және әр мәтінге түсіну тестін қойыңыз.</p>
+    </div>
+    <a href="{% url 'panel_text_create' %}" class="flex items-center gap-space-xs px-space-xl py-space-md rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg w-fit shadow-sm"><span class="material-symbols-outlined">add</span>Жаңа мәтін қосу</a>
+  </div>
+  {% include "core/panel/_tabs.html" %}
+
+  <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-space-md">
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm"><div class="font-label-sm text-label-sm text-on-surface-variant flex justify-between">Мәтіндер<span class="material-symbols-outlined text-primary text-[20px]">library_books</span></div><div class="font-headline-lg text-headline-lg">{{ stats.texts }}</div></div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm"><div class="font-label-sm text-label-sm text-on-surface-variant flex justify-between">Тесті бар<span class="material-symbols-outlined text-secondary text-[20px]">fact_check</span></div><div class="font-headline-lg text-headline-lg">{{ stats.with_quiz }}</div></div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm"><div class="font-label-sm text-label-sm text-on-surface-variant flex justify-between">Сұрақтар<span class="material-symbols-outlined text-tertiary text-[20px]">quiz</span></div><div class="font-headline-lg text-headline-lg">{{ stats.questions }}</div></div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm"><div class="font-label-sm text-label-sm text-on-surface-variant flex justify-between">Оқушылар<span class="material-symbols-outlined text-primary text-[20px]">school</span></div><div class="font-headline-lg text-headline-lg">{{ stats.students }}</div></div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm"><div class="font-label-sm text-label-sm text-on-surface-variant flex justify-between">Оқу сессиясы<span class="material-symbols-outlined text-secondary text-[20px]">record_voice_over</span></div><div class="font-headline-lg text-headline-lg">{{ stats.sessions }}</div></div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm"><div class="font-label-sm text-label-sm text-on-surface-variant flex justify-between">Тест тапсыру<span class="material-symbols-outlined text-tertiary text-[20px]">task_alt</span></div><div class="font-headline-lg text-headline-lg">{{ stats.attempts }}</div></div>
+  </div>
+
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm flex flex-col">
+    <form method="get" class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+      <h2 class="font-headline-sm text-headline-sm">Барлық мәтіндер <span class="font-label-md text-label-md text-on-surface-variant">{{ texts|length }}</span></h2>
+      <div class="flex flex-wrap gap-space-sm">
+        <div class="relative"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+          <input type="search" name="q" value="{{ q }}" placeholder="Атауы немесе мәтін бойынша…" class="h-10 pl-10 pr-3 rounded-xl bg-surface-container-low outline-none"/></div>
+        <select name="grade" onchange="this.form.submit()" class="h-10 px-space-sm rounded-xl bg-surface-container-low">
+          <option value="">Барлық сыныптар</option>
+          {% for g in grades %}<option value="{{ g }}" {% if grade == g|stringformat:'s' %}selected{% endif %}>{{ g }}-сынып</option>{% endfor %}
+        </select>
+      </div>
+    </form>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+          <tr><th class="px-space-lg py-space-sm">Мәтін</th><th class="px-space-md py-space-sm">Сынып</th><th class="px-space-md py-space-sm">Күрделілігі</th><th class="px-space-md py-space-sm">Сөз</th><th class="px-space-md py-space-sm">Тест</th><th class="px-space-md py-space-sm">Оқылды</th><th class="px-space-md py-space-sm">Әрекеттер</th></tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container-high">
+          {% for t in texts %}
+          <tr class="hover:bg-surface-container-low">
+            <td class="px-space-lg py-space-md"><span class="flex flex-col"><span class="font-label-md text-label-md">«{{ t.title }}»{% if t.is_featured %} <span class="material-symbols-outlined text-[16px] text-tertiary align-middle" title="Күннің мәтіні">kid_star</span>{% endif %}</span><span class="font-body-sm text-body-sm text-on-surface-variant">{{ t.get_difficulty_display }} • {{ t.word_count }} сөз</span></span></td>
+            <td class="px-space-md py-space-md">{{ t.grade }}</td>
+            <td class="px-space-md py-space-md">{{ t.get_difficulty_display }}</td>
+            <td class="px-space-md py-space-md">{{ t.word_count }}</td>
+            <td class="px-space-md py-space-md">
+              {% if t.n_questions %}<a href="{% url 'panel_questions' t.pk %}" class="px-space-sm py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm whitespace-nowrap">{{ t.n_questions }} сұрақ</a>
+              {% else %}<a href="{% url 'panel_questions' t.pk %}" class="px-space-sm py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm whitespace-nowrap">+ Тест қою</a>{% endif %}
+            </td>
+            <td class="px-space-md py-space-md">{{ t.n_reads }}</td>
+            <td class="px-space-md py-space-md">
+              <div class="flex items-center gap-space-xs">
+                <a href="{% url 'panel_text_edit' t.pk %}" title="Өңдеу" class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">edit</span></a>
+                <a href="{% url 'panel_questions' t.pk %}" title="Тест сұрақтары" class="w-8 h-8 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">quiz</span></a>
+                <a href="{% url 'panel_text_delete' t.pk %}" title="Жою" class="w-8 h-8 rounded-lg hover:bg-error-container flex items-center justify-center text-error"><span class="material-symbols-outlined text-[20px]">delete</span></a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="px-space-lg py-space-xl text-center text-on-surface-variant">Мәтін табылмады. <a class="text-primary underline" href="{% url 'panel_text_create' %}">Алғашқы мәтінді қосыңыз</a></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% include "core/_auth_shell_top.html" %}
+{% if validlink is False %}
+  <p class="text-error">Сілтеме жарамсыз немесе ескірген. Қайта сұраңыз.</p>
+{% else %}
+<form method="post" class="flex flex-col gap-space-md">
+  {% csrf_token %}
+  {% for error in form.non_field_errors %}<p class="text-error font-body-sm text-body-sm">{{ error }}</p>{% endfor %}
+  {% for field in form %}{% include "core/_field.html" %}{% endfor %}
+  <button type="submit" class="w-full h-12 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg">{{ submit }}</button>
+</form>
+{% endif %}
+{% include "core/_auth_shell_bottom.html" %}

@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}
+{% block title %}QR-карталар{% endblock %}
+{% block content %}
+<div class="flex flex-col gap-space-lg">
+  <div class="no-print flex flex-col md:flex-row md:items-end md:justify-between gap-space-md">
+    <div>
+      <h1 class="font-headline-lg text-headline-lg">QR-карталар — {{ current }}</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant">Карталарды басып шығарып, оқушыларға таратыңыз. Оқушы картаны телефон немесе планшет камерасымен сканерлеп, бірден жүйеге кіреді.</p>
+    </div>
+    <button onclick="window.print()" class="flex items-center gap-space-xs px-space-lg py-space-sm rounded-xl bg-primary text-on-primary font-label-md text-label-md w-fit"><span class="material-symbols-outlined">print</span>Басып шығару</button>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-md print:grid-cols-3">
+    {% for c in cards %}
+    <div class="bg-surface-container-lowest rounded-xl border-2 border-dashed border-outline-variant p-space-lg flex flex-col items-center gap-space-sm break-inside-avoid">
+      <span class="font-label-sm text-label-sm text-primary">QazaqRead • {{ current }}</span>
+      <div class="qr w-36 h-36" data-url="{{ c.url }}"></div>
+      <span class="font-label-lg text-label-lg text-center">{{ c.student.display_name }}</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Код: <b class="font-mono">{{ c.student.login_code }}</b></span>
+    </div>
+    {% empty %}
+    <p class="text-on-surface-variant">Сыныпта оқушы жоқ.</p>
+    {% endfor %}
+  </div>
+  <p class="no-print font-body-sm text-body-sm text-on-surface-variant">⚠️ Карта — оқушының кілті. Карта жоғалса, әкімші панелінде жаңа код жасаңыз.</p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+document.querySelectorAll('.qr').forEach(el => new QRCode(el, { text: el.dataset.url, width: 144, height: 144, correctLevel: QRCode.CorrectLevel.M }));
+</script>
+{% endblock %}

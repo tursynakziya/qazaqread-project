@@ -1,0 +1,36 @@
+{% load qazaq %}{# expects: chart (from stats.line_chart) #}
+{% if chart %}
+<div class="w-full bg-surface-container-low/40 rounded-xl p-space-lg flex flex-col">
+  <div class="relative w-full h-56">
+    <svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 {{ chart.width }} {{ chart.height }}" role="img" aria-label="Оқу жылдамдығы графигі">
+      <defs>
+        <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#3457d5" stop-opacity="0.25"></stop>
+          <stop offset="100%" stop-color="#3457d5" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+      <line stroke="#dae2ff" stroke-width="1" x1="0" x2="{{ chart.width }}" y1="{{ chart.height|add:'-20' }}" y2="{{ chart.height|add:'-20' }}"></line>
+      {% if chart.target_y %}
+      <line stroke="#006b5f" stroke-dasharray="6,4" stroke-width="2" x1="0" x2="{{ chart.width }}" y1="{{ chart.target_y }}" y2="{{ chart.target_y }}"></line>
+      <text font-size="11" font-weight="600" fill="#006b5f" text-anchor="end" x="{{ chart.width|add:'-5' }}" y="{{ chart.target_y|add:'-5' }}">Норма: {{ chart.target }} сөз/мин</text>
+      {% endif %}
+      <path d="{{ chart.area }}" fill="url(#chartGradient)"></path>
+      <path d="{{ chart.line }}" fill="none" stroke="#0e3cbc" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"></path>
+      {% for p in chart.points %}
+      <g><title>{{ p.label }}: {{ p.value }} сөз/мин</title>
+        <circle cx="{{ p.x }}" cy="{{ p.y }}" fill="{% if forloop.last %}#006b5f{% else %}#faf8ff{% endif %}" r="5" stroke="{% if forloop.last %}#faf8ff{% else %}#0e3cbc{% endif %}" stroke-width="3"></circle>
+        <text font-size="12" font-weight="700" fill="#101b34" text-anchor="middle" x="{{ p.x }}" y="{{ p.y|add:'-12' }}">{{ p.value }}</text>
+      </g>
+      {% endfor %}
+    </svg>
+  </div>
+  <div class="flex justify-between items-center px-2 pt-space-xs font-label-sm text-label-sm text-on-surface-variant">
+    {% for p in chart.points %}<span class="{% if forloop.last %}text-primary font-bold{% endif %}">{{ p.label }}</span>{% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="w-full bg-surface-container-low/40 rounded-xl p-space-xl flex flex-col items-center gap-space-sm text-center">
+  <span class="material-symbols-outlined text-[40px] text-outline">monitoring</span>
+  <p class="font-body-md text-body-md text-on-surface-variant">Әзірге нәтиже жоқ. Алғашқы мәтінді оқығаннан кейін график пайда болады.</p>
+</div>
+{% endif %}

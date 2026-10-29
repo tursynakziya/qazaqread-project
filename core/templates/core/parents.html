@@ -1,0 +1,114 @@
+{% extends "core/base.html" %}{% load qazaq %}
+{% block title %}Ата-ана кабинеті{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-xl">
+{% if not children %}
+  <div class="max-w-xl mx-auto mt-space-2xl bg-surface-container-lowest rounded-2xl shadow-sm p-space-xl flex flex-col gap-space-md text-center items-center">
+    <span class="material-symbols-outlined text-[48px] text-primary">family_restroom</span>
+    <h1 class="font-headline-md text-headline-md">Қош келдіңіз, {{ user.short_name }}!</h1>
+    <p class="text-on-surface-variant">Баланың нәтижелерін көру үшін оның QR-картасындағы кіру кодын енгізіңіз.</p>
+    <form method="post" action="{% url 'add_child' %}" class="w-full flex flex-col gap-space-md text-left">
+      {% csrf_token %}
+      {% with field=add_form.login_code %}{% include "core/_field.html" %}{% endwith %}
+      <button class="h-12 rounded-xl bg-primary text-on-primary font-label-lg text-label-lg">Баланы қосу</button>
+    </form>
+  </div>
+{% else %}
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-md">
+    <div class="relative">
+      <button id="child-btn" type="button" class="flex items-center gap-space-md px-space-md py-space-sm bg-surface-container-lowest rounded-xl shadow-sm">
+        <span class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md">{{ child.initials }}</span>
+        <span class="flex flex-col text-left"><span class="font-label-lg text-label-lg">{{ child.display_name }}</span><span class="font-body-sm text-body-sm text-on-surface-variant">{{ child.school_class|default:"Сыныпсыз" }} сыныбы</span></span>
+        <span class="material-symbols-outlined">expand_more</span>
+      </button>
+      <div id="child-menu" class="hidden absolute left-0 mt-space-xs w-72 bg-surface-container-lowest rounded-xl shadow-lg p-space-xs z-30">
+        {% for c in children %}
+        <a href="?child={{ c.pk }}" class="flex items-center justify-between px-space-md py-space-sm rounded-lg hover:bg-surface-container-low"><span>{{ c.display_name }} <span class="text-on-surface-variant font-body-sm text-body-sm">{{ c.school_class|default:"" }}</span></span>{% if c == child %}<span class="material-symbols-outlined text-primary">check_circle</span>{% endif %}</a>
+        {% endfor %}
+        <a href="{% url 'add_child' %}" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-container-low text-primary"><span class="material-symbols-outlined">add_circle</span>Баланы қосу</a>
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-space-sm">
+      <a href="{% url 'student_report' child.pk %}" class="flex items-center gap-space-xs px-space-lg py-space-sm rounded-xl bg-primary text-on-primary font-label-md text-label-md"><span class="material-symbols-outlined">download</span>Есепті жүктеу (PDF)</a>
+      {% if teacher.email %}<a href="mailto:{{ teacher.email }}?subject=QazaqRead: {{ child.display_name|urlencode }}" class="flex items-center gap-space-xs px-space-lg py-space-sm rounded-xl bg-surface-container-high text-primary font-label-md text-label-md"><span class="material-symbols-outlined">mail</span>Мұғалімге жазу</a>{% endif %}
+    </div>
+  </div>
+
+  <div class="rounded-xl bg-gradient-to-r from-primary to-primary-container p-space-xl text-on-primary flex flex-col gap-space-xs">
+    <h1 class="font-headline-lg text-headline-lg">Қош келдіңіз, {{ user.short_name }}!</h1>
+    <p class="font-body-lg text-body-lg text-on-primary-container">
+      {% if s.last %}{{ child.short_name }} соңғы рет {{ s.last.created_at|when }} оқыды: {{ s.last.wpm|num }} сөз/мин, дәлдігі {{ s.last.accuracy|num }}%. {% if s.last.wpm >= s.norm_low %}Бұл сынып нормасына сай келеді.{% else %}Норма — {{ s.norm_low }}–{{ s.norm_high }} сөз/мин, күнделікті жаттығу көмектеседі.{% endif %}{% else %}{{ child.short_name }} әлі бірде-бір мәтін оқымаған.{% endif %}
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-lg">
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-xs">
+      <span class="font-label-md text-label-md text-on-surface-variant flex justify-between">Оқу қарқыны<span class="material-symbols-outlined text-primary">speed</span></span>
+      <span class="font-display-lg text-display-lg font-bold">{{ s.last.wpm|num|default:"—" }} <span class="font-label-md text-label-md text-on-surface-variant">сөз/мин</span></span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">{{ child.grade }}-сынып нормасы: {{ s.norm_low }}–{{ s.norm_high }}{% if s.speed_delta is not None %} • аптада {{ s.speed_delta|signed }}{% endif %}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-xs">
+      <span class="font-label-md text-label-md text-on-surface-variant flex justify-between">Оқу дәлдігі<span class="material-symbols-outlined text-secondary">check_circle</span></span>
+      <span class="font-display-lg text-display-lg font-bold">{% if s.count %}{{ s.accuracy|num }}%{% else %}—{% endif %}</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Соңғы 10 оқудың орташасы</span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-xs">
+      <span class="font-label-md text-label-md text-on-surface-variant flex justify-between">Осы айда<span class="material-symbols-outlined text-tertiary">auto_stories</span></span>
+      <span class="font-display-lg text-display-lg font-bold">{{ s.month_count }} <span class="font-label-md text-label-md text-on-surface-variant">мәтін</span></span>
+      <div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden"><div class="h-full bg-tertiary" style="width: {{ s.month_percent }}%"></div></div>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Айлық мақсат: {{ s.month_count }} / {{ s.month_goal }}</span>
+    </div>
+    <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-xs">
+      <span class="font-label-md text-label-md text-on-surface-variant flex justify-between">Осы аптада оқыды<span class="material-symbols-outlined text-primary-container">timer</span></span>
+      <span class="font-display-lg text-display-lg font-bold">{{ week.total }} <span class="font-label-md text-label-md text-on-surface-variant">мин</span></span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Ұсынылатын мөлшер: күніне {{ week.goal }} мин</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-space-xl">
+    <div class="bg-surface-container-lowest p-space-xl rounded-xl shadow-sm flex flex-col gap-space-lg">
+      <div><h2 class="font-headline-sm text-headline-sm">Апталық белсенділік</h2><p class="font-body-sm text-body-sm text-on-surface-variant">Күн сайынғы дауыстап оқу ұзақтығы (минут)</p></div>
+      <div class="relative h-48 flex items-end justify-between gap-space-sm">
+        <div class="absolute left-0 right-0 border-t-2 border-dashed border-secondary" style="bottom: calc({{ week.goal_height }}% * 0.85 + 24px)"><span class="absolute right-0 -top-5 font-label-sm text-label-sm text-secondary">{{ week.goal }} мин</span></div>
+        {% for d in week.days %}
+        <div class="flex-1 flex flex-col items-center justify-end h-full gap-1">
+          <span class="font-label-sm text-label-sm {% if d.today %}text-primary font-bold{% else %}text-on-surface-variant{% endif %}">{{ d.minutes }}м</span>
+          <div class="w-full max-w-[40px] rounded-t-lg {% if d.today %}bg-primary{% else %}bg-primary-fixed-dim{% endif %}" style="height: calc({{ d.height }}% * 0.85)"></div>
+          <span class="font-label-sm text-label-sm {% if d.today %}text-primary font-bold{% else %}text-on-surface-variant{% endif %}">{{ d.label }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="bg-surface-container-lowest p-space-xl rounded-xl shadow-sm flex flex-col gap-space-lg">
+      <div><h2 class="font-headline-sm text-headline-sm">Жылдамдық динамикасы</h2><p class="font-body-sm text-body-sm text-on-surface-variant">Соңғы оқулар және сынып нормасы</p></div>
+      {% include "core/_speed_chart.html" with chart=s.chart %}
+    </div>
+  </div>
+
+  <div class="bg-surface-container-lowest p-space-xl rounded-xl shadow-sm flex flex-col gap-space-md">
+    <div class="flex items-center justify-between">
+      <h2 class="font-headline-sm text-headline-sm">Баланың соңғы оқу сессиялары</h2>
+      <a href="{% url 'student_results' child.pk %}" class="font-label-md text-label-md text-primary flex items-center gap-1">Барлық оқу тарихы<span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
+    </div>
+    {% for r in s.sessions|slice:":5" %}
+    <a href="{{ r.get_absolute_url }}" class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm p-space-md rounded-xl bg-surface-container-low hover:bg-surface-container">
+      <span class="flex flex-col"><span class="font-label-lg text-label-lg">«{{ r.text.title }}»</span><span class="font-body-sm text-body-sm text-on-surface-variant">{{ r.created_at|when }}{% if r.teacher_comment %} • 💬 {{ r.teacher_comment|truncatechars:60 }}{% endif %}</span></span>
+      <span class="flex items-center gap-space-md font-label-md text-label-md"><span>{{ r.wpm|num }} сөз/мин</span><span>{{ r.accuracy|num }}%</span><span class="px-space-sm py-0.5 rounded-full font-label-sm text-label-sm {{ r.level.1|tone_classes }}">{{ r.level.0 }}</span>{% include "core/_mark.html" with session=r %}</span>
+    </a>
+    {% empty %}
+    <p class="text-on-surface-variant">Әзірге сессия жоқ.</p>
+    {% endfor %}
+  </div>
+{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  const btn = document.getElementById('child-btn'), menu = document.getElementById('child-menu');
+  if (!btn) return;
+  btn.addEventListener('click', e => { e.stopPropagation(); menu.classList.toggle('hidden'); });
+  document.addEventListener('click', e => { if (!menu.contains(e.target)) menu.classList.add('hidden'); });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% load static %}<!DOCTYPE html>
+<html lang="kk">
+<head>
+{% include "core/_head.html" %}
+<title>{% block title %}QazaqRead{% endblock %} — QazaqRead</title>
+</head>
+<body class="bg-surface font-body-md text-body-md text-on-surface antialiased">
+
+<aside id="sidebar" class="no-print fixed left-0 top-0 h-full w-72 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)] -translate-x-full lg:translate-x-0 transition-transform">
+  <div class="flex flex-col">
+    <a href="{% url 'home' %}" class="h-16 px-space-lg flex items-center gap-space-sm">
+      <span class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[22px]">menu_book</span></span>
+      <span class="flex flex-col">
+        <span class="font-headline-sm text-headline-sm text-primary tracking-tight">QazaqRead</span>
+        <span class="font-label-sm text-label-sm text-on-surface-variant">Оқу бағалау платформасы</span>
+      </span>
+    </a>
+    <div class="p-space-md mx-space-md mt-space-sm bg-surface-container-low rounded-xl flex items-center justify-between gap-space-sm">
+      <div class="flex flex-col min-w-0">
+        <span class="font-label-md text-label-md text-on-surface">{{ nav_subtitle }}</span>
+        <span class="font-body-sm text-body-sm text-on-surface-variant truncate">{{ user.display_name }}</span>
+      </div>
+      <span class="px-space-sm py-space-xs bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded-full shrink-0">{{ user.get_role_display }}</span>
+    </div>
+    <nav class="flex flex-col gap-space-xs px-space-md mt-space-lg">
+      {% for item in nav_items %}
+      <a href="{{ item.url }}" {% if item.active %}aria-current="page"{% endif %}
+         class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl transition-all {% if item.active %}bg-primary-container text-on-primary font-label-lg{% else %}text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface{% endif %}">
+        <span class="material-symbols-outlined text-[20px]">{{ item.icon }}</span>{{ item.label }}
+      </a>
+      {% endfor %}
+    </nav>
+  </div>
+  {% if nav_norm %}
+  <div class="p-space-md mx-space-md mb-space-md bg-surface-container-low rounded-xl flex items-center justify-between">
+    <div class="flex items-center gap-space-sm">
+      <span class="material-symbols-outlined text-secondary text-[20px]">verified</span>
+      <span class="font-label-sm text-label-sm text-on-surface-variant">Бағалау нормасы: {{ nav_norm.grade }}-сынып</span>
+    </div>
+    <span class="font-label-sm text-label-sm text-on-surface font-semibold">{{ nav_norm.low }}–{{ nav_norm.high }} сөз/мин</span>
+  </div>
+  {% endif %}
+</aside>
+
+<div class="lg:pl-72">
+  <header class="no-print fixed top-0 left-0 lg:left-72 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="w-full h-16 px-space-md md:px-space-xl flex items-center justify-between">
+      <div class="flex items-center gap-space-md">
+        <button id="sidebar-btn" type="button" class="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low" title="Мәзір"><span class="material-symbols-outlined">menu</span></button>
+        <span class="font-label-lg text-label-lg text-on-surface hidden md:inline">Қазақша мәтін оқу дағдысын онлайн талдау жүйесі</span>
+      </div>
+      <div class="flex items-center gap-space-md">
+        <div class="flex items-center bg-surface-container-low rounded-full px-space-xs py-space-xs gap-space-xs" title="Қаріп өлшемі">
+          <button data-scale="0.9" type="button" class="px-space-sm py-space-xs rounded-full font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container-high">A-</button>
+          <button data-scale="1" type="button" class="px-space-sm py-space-xs rounded-full font-label-sm text-label-sm text-on-surface hover:bg-surface-container-high">A</button>
+          <button data-scale="1.15" type="button" class="px-space-sm py-space-xs rounded-full font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container-high">A+</button>
+        </div>
+        <div class="relative">
+          <button id="user-menu-btn" type="button" class="flex items-center gap-space-sm" title="{{ user.display_name }}">
+            <span class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-on-primary font-label-md text-label-md">{{ user.initials }}</span>
+            <span class="material-symbols-outlined text-on-surface-variant hidden sm:inline">expand_more</span>
+          </button>
+          <div id="user-menu" class="hidden absolute right-0 mt-space-sm w-56 bg-surface-container-lowest rounded-xl shadow-lg p-space-xs z-50">
+            <div class="px-space-md py-space-sm border-b border-surface-container-high">
+              <div class="font-label-md text-label-md text-on-surface truncate">{{ user.display_name }}</div>
+              <div class="font-body-sm text-body-sm text-on-surface-variant">{{ user.get_role_display }}</div>
+            </div>
+            <a href="{% url 'settings' %}" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-container-low font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">settings</span>Баптаулар</a>
+            {% if user.is_admin %}<a href="{% url 'panel_dashboard' %}" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-container-low font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">dashboard</span>Әкімші панелі</a>{% endif %}
+            {% if user.is_staff %}<a href="{% url 'admin:index' %}" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-container-low font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">database</span>Django admin</a>{% endif %}
+            <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+              <button type="submit" class="w-full flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-error-container text-error font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">logout</span>Шығу</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="page-content" class="print-reset w-full pt-20 px-space-md md:px-space-xl pb-space-2xl min-h-screen bg-surface">
+    {% if messages %}
+    <div class="no-print flex flex-col gap-space-sm mb-space-lg">
+      {% for message in messages %}
+      <div data-flash class="flex items-center justify-between gap-space-md px-space-lg py-space-md rounded-xl {% if message.tags == 'error' %}bg-error-container text-on-error-container{% else %}bg-secondary-container text-on-secondary-container{% endif %}">
+        <span class="font-label-md text-label-md">{{ message }}</span>
+        <button type="button" class="material-symbols-outlined text-[18px]" title="Жабу">close</button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script src="{% static 'core/js/app.js' %}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

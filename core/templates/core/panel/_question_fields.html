@@ -1,0 +1,21 @@
+{# expects: form (QuestionForm) #}
+{% csrf_token %}
+{% for error in form.non_field_errors %}<div class="px-space-md py-space-sm rounded-xl bg-error-container text-on-error-container">{{ error }}</div>{% endfor %}
+{% with field=form.prompt %}{% include "core/_field.html" %}{% endwith %}
+<fieldset class="flex flex-col gap-space-sm">
+  <legend class="font-label-md text-label-md text-on-surface mb-1">Жауап нұсқалары <span class="font-body-sm text-body-sm text-on-surface-variant">— дұрысын белгілеңіз</span></legend>
+  {% for value, letter, field in form.choice_rows %}
+  <label class="flex items-center gap-space-sm">
+    <input type="radio" name="correct" value="{{ value }}" class="w-5 h-5 accent-secondary shrink-0" title="Дұрыс жауап" {% if form.correct_value == value %}checked{% endif %}/>
+    <span class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center font-label-md text-label-md shrink-0">{{ letter }}</span>
+    <span class="flex-1">{{ field }}</span>
+  </label>
+  {% for error in field.errors %}<span class="font-body-sm text-body-sm text-error pl-16">{{ error }}</span>{% endfor %}
+  {% endfor %}
+  {% for error in form.correct.errors %}<span class="font-body-sm text-body-sm text-error">{{ error }}</span>{% endfor %}
+  <span class="font-body-sm text-body-sm text-on-surface-variant">A мен B міндетті, C мен D — қажет болса.</span>
+</fieldset>
+<div class="grid grid-cols-1 sm:grid-cols-4 gap-space-md">
+  <div class="sm:col-span-3">{% with field=form.explanation %}{% include "core/_field.html" %}{% endwith %}</div>
+  {% with field=form.order %}{% include "core/_field.html" %}{% endwith %}
+</div>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html lang="kk"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed": "#001454", "on-tertiary-fixed-variant": "#653e00", "outline": "#747685", "on-secondary-container": "#007165", "on-tertiary-fixed": "#2a1700", "on-primary-container": "#d9deff", "on-secondary-fixed-variant": "#005047", "on-surface": "#101b34", "on-secondary": "#ffffff", "primary-container": "#3457d5", "surface-container-high": "#e2e7ff", "surface-tint": "#2e52d0", "on-tertiary-container": "#ffd9ae", "surface": "#faf8ff", "surface-container": "#eaedff", "on-background": "#101b34", "on-error-container": "#93000a", "error-container": "#ffdad6", "background": "#faf8ff", "inverse-primary": "#b8c4ff", "error": "#ba1a1a", "outline-variant": "#c4c5d6", "tertiary": "#6a4200", "primary-fixed": "#dde1ff", "on-surface-variant": "#444654", "tertiary-fixed-dim": "#ffb95f", "on-primary-fixed-variant": "#0337b8", "primary": "#0e3cbc", "surface-container-highest": "#dae2ff", "surface-container-lowest": "#ffffff", "surface-dim": "#cfd9fb", "secondary-fixed": "#76f8e4", "surface-bright": "#faf8ff", "tertiary-container": "#8b5700", "on-tertiary": "#ffffff", "secondary-container": "#76f8e4", "tertiary-fixed": "#ffddb8", "primary-fixed-dim": "#b8c4ff", "surface-variant": "#dae2ff", "inverse-surface": "#26304a", "surface-container-low": "#f2f3ff", "on-error": "#ffffff", "secondary-fixed-dim": "#56dbc8", "on-primary": "#ffffff", "on-secondary-fixed": "#00201c", "secondary": "#006b5f", "inverse-on-surface": "#eef0ff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "2rem", "space-sm": "0.5rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "space-xl": "2rem", "margin-mobile": "1rem", "space-2xl": "3rem", "gutter": "1.5rem", "space-md": "1rem", "gutter-mobile": "1rem" }, "fontFamily": { "body-md": ["Inter"], "reader-md-mobile": ["Inter"], "label-lg": ["Inter"], "body-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "reader-lg-mobile": ["Inter"], "headline-lg": ["Inter"], "reader-lg": ["Inter"], "display-lg-mobile": ["Inter"], "label-sm": ["Inter"], "reader-md": ["Inter"], "display-lg": ["Inter"], "body-sm": ["Inter"], "headline-md": ["Inter"], "label-md": ["Inter"], "headline-sm": ["Inter"] }, "fontSize": { "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "reader-md-mobile": ["18px", { "lineHeight": "32px", "letterSpacing": "0.005em", "fontWeight": "400" }], "label-lg": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "reader-lg-mobile": ["22px", { "lineHeight": "38px", "letterSpacing": "0.01em", "fontWeight": "500" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "reader-lg": ["28px", { "lineHeight": "48px", "letterSpacing": "0.01em", "fontWeight": "500" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "reader-md": ["22px", { "lineHeight": "38px", "letterSpacing": "0.005em", "fontWeight": "400" }], "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-lg flex items-center gap-space-sm bg-surface-container-lowest"><img alt="QazaqRead Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XXC3CD5hyy1FTlLjHgXZD0BudIGi3jpW7wWktT3OzwgWgYb9pKR1mrQ8tywcvsheY3-0sVIiXyhZQUy8IrlGoLwTl4TKSx4Mnn6QPYh9UkeDivAoYVvv5mPXsXBitrrDTHMmJmiXnKrREa2C1OIA5DTahBFA7ktvXEzjbxQ7hs-7W478JVBUSBDTKkLZCFYw8UfVJI6HJiU2TuBeJ8OpC0yov79D3t9y5HkwC5iKg"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">QazaqRead</span><span class="font-label-sm text-label-sm text-on-surface-variant">Оқу бағалау платформасы</span></div></div><div class="p-space-md mx-space-md mt-space-sm bg-surface-container-low rounded-xl flex items-center justify-between"><div class="flex flex-col"><span class="font-label-md text-label-md text-on-surface">3-сынып оқушысы</span><span class="font-body-sm text-body-sm text-on-surface-variant">Айару Серікқызы</span></div><span class="px-space-sm py-space-xs bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded-full">Оқушы</span></div><nav class="flex flex-col gap-space-xs px-space-md mt-space-lg" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded-xl"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="basty-bet" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span>Басты бет</a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="matinder-kitapkhanasy" href="#"><span class="material-symbols-outlined text-[20px]">menu_book</span>Мәтіндер кітапханасы</a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dauystap-oqu" href="#"><span class="material-symbols-outlined text-[20px]">mic</span>Дауыстап оқу</a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm transition-all bg-primary-container text-on-primary font-label-lg rounded-xl" data-path="menin-natizhelerim" href="#"><span class="material-symbols-outlined text-[20px]">insights</span>Менің нәтижелерім</a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="mughalim-kabineti" href="#"><span class="material-symbols-outlined text-[20px]">school</span>Мұғалім кабинеті</a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="baptamalar" href="#"><span class="material-symbols-outlined text-[20px]">settings</span>Баптаулар</a></nav></div><div class="p-space-md mx-space-md mb-space-md bg-surface-container-low rounded-xl flex items-center justify-between"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-secondary text-[20px]">verified</span><span class="font-label-sm text-label-sm text-on-surface-variant">Бағалау нормасы: 3-сынып</span></div><span class="font-label-sm text-label-sm text-on-surface font-semibold">75 сөз/мин</span></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full h-16 px-space-xl flex items-center justify-between"><div class="flex items-center gap-space-md"><img alt="QazaqRead Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XXC3CD5hyy1FTlLjHgXZD0BudIGi3jpW7wWktT3OzwgWgYb9pKR1mrQ8tywcvsheY3-0sVIiXyhZQUy8IrlGoLwTl4TKSx4Mnn6QPYh9UkeDivAoYVvv5mPXsXBitrrDTHMmJmiXnKrREa2C1OIA5DTahBFA7ktvXEzjbxQ7hs-7W478JVBUSBDTKkLZCFYw8UfVJI6HJiU2TuBeJ8OpC0yov79D3t9y5HkwC5iKg"/><span class="font-label-lg text-label-lg text-on-surface hidden md:inline">Қазақша мәтін оқу дағдысын онлайн талдау жүйесі</span></div><div class="flex items-center gap-space-lg"><div class="flex items-center bg-surface-container-low rounded-full px-space-xs py-space-xs gap-space-xs"><button class="px-space-sm py-space-xs rounded-full font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Кіші қаріп" type="button">A-</button><button class="px-space-sm py-space-xs rounded-full font-label-sm text-label-sm bg-surface-container-highest text-on-surface font-bold" title="Орташа қаріп" type="button">A</button><button class="px-space-sm py-space-xs rounded-full font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Үлкен қаріп" type="button">A+</button></div><button class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Дыбыстық хабарламалар" type="button"><span class="material-symbols-outlined text-[20px]">volume_up</span></button><button class="relative w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Хабарландырулар" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-sm pl-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 px-space-xl pb-space-2xl min-h-screen bg-surface"><div class="flex flex-col w-full">
+<div class="flex flex-col gap-space-lg w-full">
+<!-- Жоғарғы навигация мен нан қоқымы (Breadcrumbs & Navigation Meta) -->
+<div class="flex flex-wrap items-center justify-between gap-space-md">
+<nav aria-label="Нан қоқымы" class="flex items-center gap-space-xs font-label-sm text-label-sm text-on-surface-variant">
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]">home</span>
+          Басты бет
+        </a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Оқу тапсырмасы</a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<span class="text-on-surface font-semibold">Нәтиже</span>
+</nav>
+<div class="flex items-center gap-space-sm bg-surface-container-high px-space-md py-1.5 rounded-full">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm text-on-surface">3-сынып мемлекеттік стандарты (50–60 сөз/мин)</span>
+</div>
+</div>
+<!-- Басты тақырып және Жігерлендіру баннері (Hero Support Banner) -->
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-container via-primary to-primary-container text-on-primary p-space-xl shadow-lg">
+<div class="absolute -right-8 -top-8 w-64 h-64 bg-secondary-fixed/20 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg">
+<div class="flex flex-col gap-space-xs max-w-2xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-lowest/20 backdrop-blur-md text-on-primary font-label-sm text-label-sm w-fit">
+<span class="material-symbols-outlined text-[16px] text-secondary-fixed">auto_awesome</span>
+            Сессия сәтті аяқталды
+          </div>
+<h1 class="font-display-lg text-display-lg font-bold tracking-tight text-on-primary">Оқу нәтижесі</h1>
+<p class="font-body-lg text-body-lg text-on-primary-container">
+            «Жарайсың, Айару! Әр оқыған сайын тәжірибең арта түседі. 🌟»
+          </p>
+<div class="flex items-center gap-2 pt-2">
+<span class="px-2.5 py-1 rounded-lg bg-surface-container-lowest/15 font-label-md text-label-md text-on-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+              Мәтін: «Менің отбасым»
+            </span>
+<span class="px-2.5 py-1 rounded-lg bg-surface-container-lowest/15 font-label-md text-label-md text-on-primary">
+              Бастауыш сынып (3-сынып)
+            </span>
+</div>
+</div>
+<!-- Аудио жазбаны қайта тыңдау қалқымалы батырмасы -->
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm w-full md:w-auto">
+<button class="group flex items-center justify-center gap-3 px-space-lg py-3 rounded-xl bg-surface-container-lowest text-primary font-label-lg text-label-lg shadow-md hover:bg-surface-container-high transition-all active:scale-95" id="playAudioBtn" type="button">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[20px]" id="playAudioIcon">play_arrow</span>
+</div>
+<span id="playAudioText">Аудиожазбаны тыңдау</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Негізгі 4 көрсеткіш карточкалары (Key Metrics Bento Grid) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- 1. Жалпы оқу жылдамдығы -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Жалпы оқу жылдамдығы</span>
+<div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">speed</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-on-surface tracking-tight">58</span>
+<span class="font-label-md text-label-md text-on-surface-variant">сөз/мин</span>
+</div>
+<div class="mt-space-sm flex items-center justify-between pt-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+              Жақсы деңгей
+            </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Норма: 50–60</span>
+</div>
+</div>
+</div>
+<!-- 2. Дұрыс оқылған сөздер -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Дұрыс оқылған сөздер</span>
+<div class="w-10 h-10 rounded-xl bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">spellcheck</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-secondary tracking-tight">52</span>
+<span class="font-label-md text-label-md text-on-surface-variant">/ 56 сөз</span>
+</div>
+<div class="mt-space-sm flex items-center gap-2">
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 92.8%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">93%</span>
+</div>
+</div>
+</div>
+<!-- 3. Оқу дәлдігі -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Оқу дәлдігі</span>
+<div class="w-10 h-10 rounded-xl bg-primary-fixed-dim flex items-center justify-center text-on-primary-fixed-variant">
+<span class="material-symbols-outlined text-[22px]">task_alt</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-primary tracking-tight">92%</span>
+</div>
+<div class="mt-space-sm flex items-center justify-between pt-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-primary font-label-sm text-label-sm font-semibold">
+              Жоғары дәлдік
+            </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Қателік: 4 сөз</span>
+</div>
+</div>
+</div>
+<!-- 4. Оқу уақыты -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Оқу уақыты</span>
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[22px]">timer</span>
+</div>
+</div>
+<div class="mt-space-md">
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg font-bold text-on-surface tracking-tight">01:00</span>
+<span class="font-label-md text-label-md text-on-surface-variant">мин</span>
+</div>
+<div class="mt-space-sm flex items-center justify-between pt-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">
+              Белгіленген регламент
+            </span>
+<span class="material-symbols-outlined text-secondary text-[18px]">done_all</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Мәтінді тексеру және талдау бөлімі (Detailed Word Comparison Analysis) -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm p-space-xl flex flex-col gap-space-lg">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]">find_in_page</span>
+<h2 class="font-headline-md text-headline-md font-semibold text-on-surface">Мәтінді тексеру және талдау</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Әр сөзді басып, дауыс тану барысындағы нақты дыбысталуын және мұғалім ескертпесін көруге болады
+          </p>
+</div>
+<!-- Визуалды шартты белгілер (Visual Legend) -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/30 text-secondary font-label-sm text-label-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+            Дұрыс (52)
+          </div>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-tertiary font-label-sm text-label-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>
+            Тексеру қажет (2)
+          </div>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+            Өткізіп алынған (2)
+          </div>
+</div>
+</div>
+<!-- Интерактивті Мәтін аймағы (Reading Passage Tokenizer Display) -->
+<div class="bg-surface-container-low p-space-xl rounded-xl max-w-4xl mx-auto w-full leading-loose font-reader-md text-reader-md text-on-surface select-text">
+<p class="inline">
+<span class="px-1.5 py-0.5 rounded text-on-surface">Менің</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">отбасым</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">үлкен</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">әрі</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium hover:bg-secondary-fixed transition-colors" title="Дұрыс оқылды (Дәлдік: 99%)" type="button">тату</button>.
+          <span class="px-1.5 py-0.5 rounded text-on-surface">Біз</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">Алматы</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">қаласында</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium hover:bg-secondary-fixed transition-colors" title="Дұрыс оқылды (Дәлдік: 98%)" type="button">тұрамыз</button>.
+          <span class="px-1.5 py-0.5 rounded text-on-surface">Отбасымызда</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">бес</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium hover:bg-secondary-fixed transition-colors" title="Дұрыс оқылды (Дәлдік: 96%)" type="button">адам</button>
+<span class="px-1.5 py-0.5 rounded text-on-surface">бар:</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">әкем,</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">анам,</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">ағам,</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">мен</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">және</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">кішкентай</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium hover:bg-secondary-fixed transition-colors" title="Дұрыс оқылды" type="button">қарындасым</button>.
+          <span class="px-1.5 py-0.5 rounded text-on-surface">Әкем</span>
+<span class="text-on-surface">—</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">құрылысшы</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium hover:bg-secondary-fixed transition-colors" type="button">инженер</button>,
+          <span class="px-1.5 py-0.5 rounded text-on-surface">ол</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">жаңа</span>
+<!-- Сары/Тексеру маркері -->
+<span class="relative inline-block group">
+<button class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-tertiary-fixed text-tertiary font-medium cursor-pointer shadow-sm hover:bg-tertiary-fixed-dim transition-all" type="button">
+<span class="line-through opacity-70">ғимараттар</span>
+<span class="material-symbols-outlined text-[16px]">info</span>
+</button>
+<span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:flex flex-col bg-inverse-surface text-inverse-on-surface text-body-sm font-body-sm px-3 py-1.5 rounded-lg shadow-xl z-30 whitespace-nowrap">
+<span>Аудиода: «үйлер» деп айтылды</span>
+<span class="text-[11px] opacity-75 font-label-sm">Мағыналық ауыстыру</span>
+</span>
+</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">салады.</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">Анам</span>
+<span class="text-on-surface">—</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">мектепте</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">қазақ</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">тілі</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">мен</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium" type="button">әдебиеті</button>
+<span class="px-1.5 py-0.5 rounded text-on-surface">пәнінің</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium" type="button">мұғалімі</button>.
+          <span class="px-1.5 py-0.5 rounded text-on-surface">Ол</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">өте</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium" type="button">мейірімді</button>
+<span class="px-1.5 py-0.5 rounded text-on-surface">және</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">бізге</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">күн</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">сайын</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium" type="button">қызықты</button>
+<span class="px-1.5 py-0.5 rounded text-on-surface">ертегілер</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">оқып</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">береді.</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">Біз</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">бос</span>
+<button class="inline-flex items-center px-2 py-0.5 rounded-lg bg-secondary-fixed/40 text-secondary font-medium" type="button">уақытымызда</button>
+<span class="px-1.5 py-0.5 rounded text-on-surface">саябақта</span>
+<!-- Қызыл/Өткізілген сөз маркері -->
+<span class="relative inline-block group">
+<button class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-error-container text-on-error-container font-medium hover:bg-error/20 transition-all" type="button">
+<span class="line-through">серуендеп</span>
+<span class="material-symbols-outlined text-[16px]">cancel</span>
+</button>
+<span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:flex flex-col bg-inverse-surface text-inverse-on-surface text-body-sm font-body-sm px-3 py-1.5 rounded-lg shadow-xl z-30 whitespace-nowrap">
+<span>Сөз оқылмай, өткізіп алынды</span>
+</span>
+</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">бірге</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">кітап</span>
+<span class="px-1.5 py-0.5 rounded text-on-surface">оқимыз...</span>
+</p>
+</div>
+<!-- Жасанды интеллект / Дауыс тану жүйесінің ескертпесі (Disclaimer Box) -->
+<div class="flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-high/60 text-on-surface">
+<span class="material-symbols-outlined text-primary text-[24px] mt-0.5">neurology</span>
+<div class="flex flex-col gap-0.5">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Жасанды интеллект сараптамасы</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Ескерту: Дауыс тану модулі қазақ тілінің акценті мен дыбысталуын ескереді. Күмәнді сөздер «Тексеруді қажет ететін сөздер» белгісімен көрсетілді. Мұғалім бұл сөздерді тыңдап, бағаны түзете алады.
+          </p>
+</div>
+</div>
+</div>
+<!-- Төменгі салыстыру блогы және Әрекеттер тақтасы (Comparison & Action Section) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-stretch">
+<!-- Алдыңғы нәтижелермен салыстыру (Data Visualization Sparkline & Progression) -->
+<div class="lg:col-span-6 bg-surface-container-lowest p-space-xl rounded-2xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">Алдыңғы нәтижелермен салыстыру</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Соңғы 3 оқу сессиясының динамикасы</span>
+</div>
+<span class="px-space-sm py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+            +16% өсім
+          </span>
+</div>
+<div class="mt-space-lg flex flex-col gap-space-md">
+<!-- Графикалық бағандық визуализация (Compact SVG Comparison) -->
+<div class="h-36 w-full flex items-end justify-between gap-space-md px-space-md pb-space-sm bg-surface-container-low rounded-xl">
+<!-- 1-сессия -->
+<div class="flex flex-col items-center gap-2 flex-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">50 сөз</span>
+<div class="w-full bg-primary-fixed rounded-t-lg transition-all duration-500" style="height: 65%;"></div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">12 Қазан</span>
+</div>
+<!-- 2-сессия -->
+<div class="flex flex-col items-center gap-2 flex-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">54 сөз</span>
+<div class="w-full bg-primary-container/60 rounded-t-lg transition-all duration-500" style="height: 75%;"></div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">19 Қазан</span>
+</div>
+<!-- Қазіргі сессия -->
+<div class="flex flex-col items-center gap-2 flex-1">
+<span class="font-label-sm text-label-sm text-primary font-bold">58 сөз</span>
+<div class="w-full bg-primary rounded-t-lg shadow-sm transition-all duration-500" style="height: 90%;"></div>
+<span class="font-label-sm text-label-sm text-primary font-bold">Бүгін</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant pt-space-xs">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span>Бүгінгі нәтиже (58 сөз/мин)</span>
+</div>
+<span class="font-semibold text-secondary">Мақсат орындалды (100%)</span>
+</div>
+</div>
+</div>
+<!-- Әрекет түймелері (Primary & Secondary Actions) -->
+<div class="lg:col-span-6 bg-surface-container-lowest p-space-xl rounded-2xl shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-1">
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">Келесі қадамдар</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Оқу дағдысын бекіту үшін мәтінді қайта оқуға немесе жеке күнделікке сақтауға болады.
+          </p>
+</div>
+<div class="flex flex-col gap-space-sm mt-space-lg">
+<!-- Қайта оқу (Primary Indigo Button) -->
+<a class="flex items-center justify-center gap-2 w-full py-3.5 px-space-xl rounded-xl bg-primary-container text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary transition-all active:scale-[0.99]" href="#">
+<span class="material-symbols-outlined text-[20px]">replay</span>
+            Қайта оқу
+          </a>
+<!-- Нәтижелер тарихы (Secondary Outline/Low Button) -->
+<a class="flex items-center justify-center gap-2 w-full py-3.5 px-space-xl rounded-xl bg-surface-container-low text-on-surface font-label-lg text-label-lg hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+            Нәтижелер тарихы
+          </a>
+<!-- Басты бетке оралу (Ghost/Subtle Button) -->
+<a class="flex items-center justify-center gap-2 w-full py-2.5 px-space-xl rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Басты бетке оралу
+          </a>
+</div>
+</div>
+</div>
+<!-- Төменгі көмекші ақпараттық карточка (Encouragement card with teacher tip) -->
+<div class="p-space-lg rounded-2xl bg-surface-container flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[24px]">school</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Мұғалімнің ұсынысы</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Күрделі ұзын сөздерді оқығанда екпінге мән беріңіз. Жылдамдық өте жақсы, интонацияны күшейтейік!
+          </p>
+</div>
+</div>
+<button class="whitespace-nowrap px-space-md py-2 rounded-xl bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm hover:bg-surface-container-high transition-colors" type="button">
+        Толық есепті жүктеу (PDF)
+      </button>
+</div>
+</div>
+</div>
+<script>
+  // Аудио ойнату микро-интеракциясы
+  (function () {
+    const playBtn = document.getElementById('playAudioBtn');
+    const playIcon = document.getElementById('playAudioIcon');
+    const playText = document.getElementById('playAudioText');
+    let isPlaying = false;
+
+    if (playBtn) {
+      playBtn.addEventListener('click', function () {
+        isPlaying = !isPlaying;
+        if (isPlaying) {
+          playIcon.textContent = 'pause';
+          playText.textContent = 'Тоқтату (00:14 / 01:00)';
+          playBtn.classList.add('bg-primary-fixed');
+        } else {
+          playIcon.textContent = 'play_arrow';
+          playText.textContent = 'Аудиожазбаны тыңдау';
+          playBtn.classList.remove('bg-primary-fixed');
+        }
+      });
+    }
+  })();
+</script></main></div></body></html>

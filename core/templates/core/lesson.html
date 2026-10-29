@@ -1,0 +1,108 @@
+{% extends "core/base.html" %}{% load qazaq %}
+{% block title %}Сыныпта оқу: {{ lesson.school_class }}{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-lg max-w-6xl mx-auto">
+  <a href="{% url 'teacher_dashboard' %}?class={{ lesson.school_class.pk }}" class="font-label-md text-label-md text-primary flex items-center gap-1 w-fit"><span class="material-symbols-outlined text-[18px]">arrow_back</span>Мұғалім кабинеті</a>
+
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-space-md">
+    <div class="flex flex-col gap-space-xs">
+      <span class="font-label-sm text-label-sm text-on-surface-variant">Сыныпта минуттық оқу • {{ lesson.created_at|date:"d.m.Y H:i" }}</span>
+      <h1 class="font-headline-lg text-headline-lg">{{ lesson.school_class }} сыныбы — «{{ lesson.text.title }}»</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant">{{ lesson.text.word_count }} сөз • {{ lesson.text.grade }}-сынып нормасы: {{ norm.0 }}–{{ norm.1 }} сөз/мин</p>
+    </div>
+    <div class="flex flex-col items-start md:items-end gap-1">
+      <span class="font-label-md text-label-md">Оқыды: {{ read_count }} / {{ total }}</span>
+      <div class="w-56 h-2 rounded-full bg-surface-container-high overflow-hidden"><div class="h-full bg-secondary" style="width:{% widthratio read_count total|default:1 100 %}%"></div></div>
+    </div>
+  </div>
+
+  {% if just_read %}
+  <div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-md border-l-4 border-secondary">
+    <div class="flex flex-col">
+      <span class="font-label-md text-label-md text-on-surface-variant">Жаңа ғана оқыды</span>
+      <span class="font-headline-sm text-headline-sm">{{ just_read.student.last_name }} {{ just_read.student.first_name }}: {{ just_read.wpm|num }} сөз/мин, дәлдігі {{ just_read.accuracy|num }}%</span>
+    </div>
+    <a href="{{ just_read.get_absolute_url }}" class="font-label-md text-label-md text-primary flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">visibility</span>Толық нәтиже</a>
+  </div>
+  {% endif %}
+
+  {% if next_row %}
+  <div class="rounded-xl bg-gradient-to-r from-primary to-primary-container text-on-primary p-space-xl flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+    <div class="flex items-center gap-space-md">
+      <span class="w-16 h-16 rounded-full bg-on-primary/15 flex items-center justify-center font-headline-md text-headline-md shrink-0">{{ next_row.n }}</span>
+      <div class="flex flex-col">
+        <span class="font-label-md text-label-md text-on-primary-container">Келесі оқушы</span>
+        <span class="font-headline-lg text-headline-lg">{{ next_row.student.last_name }} {{ next_row.student.first_name }}</span>
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-space-sm">
+      <a href="{% url 'lesson_read' lesson.pk next_row.student.pk %}" class="flex items-center gap-space-sm px-space-xl py-space-md bg-secondary-container text-on-secondary-container rounded-xl font-label-lg text-label-lg shadow-lg"><span class="material-symbols-outlined fill-icon">mic</span>Оқуды бастау</a>
+      <form method="post" action="{% url 'lesson_absent' lesson.pk next_row.student.pk %}">{% csrf_token %}
+        <button type="submit" class="h-full flex items-center gap-space-xs px-space-lg py-space-md bg-on-primary/10 hover:bg-on-primary/20 rounded-xl font-label-md text-label-md"><span class="material-symbols-outlined">person_off</span>Сабақта жоқ</button>
+      </form>
+    </div>
+  </div>
+  {% elif rows %}
+  <div class="p-space-lg rounded-xl bg-secondary-container text-on-secondary-container flex items-center gap-space-sm">
+    <span class="material-symbols-outlined fill-icon">task_alt</span>
+    <span class="font-label-lg text-label-lg">Барлық оқушы оқып болды! Енді төменде баға қойып, «Бағаларды сақтау» батырмасын басыңыз.</span>
+  </div>
+  {% endif %}
+
+  <form method="post" class="bg-surface-container-lowest rounded-xl shadow-sm flex flex-col">
+    {% csrf_token %}
+    <div class="p-space-lg flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+      <h2 class="font-headline-sm text-headline-sm">Сынып тізімі <span class="text-on-surface-variant font-label-md text-label-md">әліпби бойынша</span></h2>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Баға нәтижеге қарап ұсынылады — қажет болса өзгертіңіз.</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+          <tr><th class="px-space-lg py-space-sm">№</th><th class="px-space-md py-space-sm">Оқушы</th><th class="px-space-md py-space-sm">Нәтиже</th><th class="px-space-md py-space-sm">Баға</th><th class="px-space-md py-space-sm">Пікір</th><th class="px-space-md py-space-sm"></th></tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container-high">
+          {% for row in rows %}{% with st=row.student s=row.session %}
+          <tr class="{% if row == next_row %}bg-primary-fixed/40{% elif row.absent %}opacity-60{% endif %}">
+            <td class="px-space-lg py-space-md font-label-md text-label-md text-on-surface-variant">{{ row.n }}</td>
+            <td class="px-space-md py-space-md font-label-md text-label-md whitespace-nowrap">{{ st.last_name }} {{ st.first_name }}{% if not st.last_name and not st.first_name %}{{ st.username }}{% endif %}</td>
+            <td class="px-space-md py-space-md">
+              {% if s %}
+              <a href="{{ s.get_absolute_url }}" class="flex flex-col hover:text-primary">
+                <span class="font-label-md text-label-md whitespace-nowrap">{{ s.wpm|num }} сөз/мин • {{ s.accuracy|num }}%</span>
+                <span class="w-fit px-space-sm py-0.5 rounded-full font-label-sm text-label-sm whitespace-nowrap {{ s.level.1|tone_classes }}">{{ s.level.0 }}</span>
+              </a>
+              {% elif row.absent %}<span class="font-body-sm text-body-sm text-on-surface-variant">Сабақта жоқ</span>
+              {% else %}<span class="font-body-sm text-body-sm text-on-surface-variant">Әлі оқымады</span>{% endif %}
+            </td>
+            <td class="px-space-md py-space-md">
+              {% if s %}
+              <select name="mark_{{ st.pk }}" class="h-10 px-space-sm rounded-lg bg-surface-container-low font-label-md text-label-md">
+                <option value="">—</option>
+                {% for v, l in marks %}<option value="{{ v }}" {% if s.mark %}{% if s.mark == v %}selected{% endif %}{% elif s.suggested_mark == v %}selected{% endif %}>{{ l }}</option>{% endfor %}
+              </select>
+              {% if not s.mark %}<span class="block font-body-sm text-[12px] text-on-surface-variant mt-1">ұсынылған</span>{% endif %}
+              {% else %}—{% endif %}
+            </td>
+            <td class="px-space-md py-space-md">{% if s %}<input type="text" name="comment_{{ st.pk }}" value="{{ s.teacher_comment }}" maxlength="500" placeholder="міндетті емес" class="h-10 w-full min-w-[10rem] px-space-sm rounded-lg bg-surface-container-low font-body-sm text-body-sm"/>{% endif %}</td>
+            <td class="px-space-md py-space-md">
+              <div class="flex items-center gap-space-xs justify-end">
+                <a href="{% url 'lesson_read' lesson.pk st.pk %}" class="flex items-center gap-1 px-space-sm h-9 rounded-lg bg-surface-container-high text-primary font-label-sm text-label-sm whitespace-nowrap"><span class="material-symbols-outlined text-[18px]">{% if s %}replay{% else %}mic{% endif %}</span>{% if s %}Қайта{% else %}Оқу{% endif %}</a>
+                {% if not s %}<button type="submit" form="absent-{{ st.pk }}" title="{% if row.absent %}Сабаққа келді{% else %}Сабақта жоқ{% endif %}" class="w-9 h-9 rounded-lg hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">{% if row.absent %}person_check{% else %}person_off{% endif %}</span></button>{% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endwith %}{% empty %}
+          <tr><td colspan="6" class="px-space-lg py-space-xl text-center text-on-surface-variant">Сыныпта әлі оқушы жоқ. <a class="text-primary underline" href="{% url 'student_add' %}">Оқушыны қосу</a></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if read_count %}
+    <div class="p-space-lg flex justify-end">
+      <button type="submit" class="flex items-center gap-space-xs px-space-xl h-12 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg"><span class="material-symbols-outlined">save</span>Бағаларды сақтау</button>
+    </div>
+    {% endif %}
+  </form>
+  {% for row in rows %}{% if not row.session %}<form id="absent-{{ row.student.pk }}" method="post" action="{% url 'lesson_absent' lesson.pk row.student.pk %}" hidden>{% csrf_token %}</form>{% endif %}{% endfor %}
+</div>
+{% endblock %}

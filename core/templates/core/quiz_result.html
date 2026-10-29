@@ -1,0 +1,40 @@
+{% extends "core/base.html" %}{% load qazaq %}
+{% block title %}Тест нәтижесі{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-lg max-w-3xl mx-auto">
+  <div class="rounded-xl p-space-xl flex flex-col sm:flex-row sm:items-center justify-between gap-space-lg {% if attempt.percent >= 80 %}bg-secondary-container text-on-secondary-container{% elif attempt.percent >= 50 %}bg-tertiary-fixed text-on-tertiary-fixed{% else %}bg-error-container text-on-error-container{% endif %}">
+    <div class="flex flex-col gap-space-xs">
+      <span class="font-label-sm text-label-sm">«{{ attempt.text.title }}» • {{ attempt.created_at|when }}{% if user != attempt.student %} • {{ attempt.student.display_name }}{% endif %}</span>
+      <h1 class="font-headline-lg text-headline-lg">{% if attempt.percent >= 80 %}Тамаша! 🌟{% elif attempt.percent >= 50 %}Жақсы! 👍{% else %}Тағы бір рет көрейік 💪{% endif %}</h1>
+      <p class="font-body-md text-body-md">{{ attempt.total }} сұрақтың {{ attempt.correct }}-іне дұрыс жауап берілді.</p>
+    </div>
+    <span class="font-display-lg text-display-lg font-bold">{{ attempt.percent }}%</span>
+  </div>
+
+  {% for row in rows %}
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-sm">
+    <h2 class="font-label-lg text-label-lg flex items-start gap-space-xs">
+      <span class="material-symbols-outlined fill-icon {% if row.answer.is_correct %}text-secondary{% else %}text-error{% endif %}">{% if row.answer.is_correct %}check_circle{% else %}cancel{% endif %}</span>
+      {{ forloop.counter }}. {{ row.question.prompt }}
+    </h2>
+    <ul class="flex flex-col gap-space-xs pl-space-xl">
+      {% for c in row.question.choices.all %}
+      <li class="px-space-md py-space-xs rounded-lg flex items-center gap-space-sm {% if c.is_correct %}bg-secondary-container text-on-secondary-container font-semibold{% elif c.pk == row.answer.choice_id %}bg-error-container text-on-error-container line-through{% else %}text-on-surface-variant{% endif %}">
+        {{ c.label }}
+        {% if c.pk == row.answer.choice_id %}<span class="ml-auto font-label-sm text-label-sm no-underline">таңдалған жауап</span>{% elif c.is_correct %}<span class="ml-auto font-label-sm text-label-sm">дұрыс жауап</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% if row.question.explanation %}<p class="pl-space-xl font-body-sm text-body-sm text-on-surface-variant">💡 {{ row.question.explanation }}</p>{% endif %}
+  </div>
+  {% endfor %}
+
+  <div class="flex flex-wrap justify-center gap-space-sm">
+    {% if user == attempt.student %}
+    <a href="{% url 'quiz' attempt.text.pk %}" class="px-space-lg py-space-sm rounded-xl bg-surface-container-high text-primary font-label-md text-label-md flex items-center gap-space-xs"><span class="material-symbols-outlined">replay</span>Қайта тапсыру</a>
+    <a href="{% url 'library' %}" class="px-space-lg py-space-sm rounded-xl bg-primary text-on-primary font-label-md text-label-md flex items-center gap-space-xs"><span class="material-symbols-outlined">menu_book</span>Келесі мәтін</a>
+    {% endif %}
+    {% if attempt.session %}<a href="{{ attempt.session.get_absolute_url }}" class="px-space-lg py-space-sm rounded-xl bg-surface-container-low font-label-md text-label-md">Оқу нәтижесіне оралу</a>{% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% with name=request.resolver_match.url_name %}
+<nav class="flex flex-wrap gap-space-sm">
+  <a href="{% url 'panel_dashboard' %}" class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl font-label-md text-label-md {% if name == 'panel_dashboard' %}bg-primary text-on-primary{% else %}bg-surface-container-lowest hover:bg-surface-container-high{% endif %}"><span class="material-symbols-outlined text-[18px]">library_books</span>Мәтіндер</a>
+  <a href="{% url 'panel_quiz_results' %}" class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl font-label-md text-label-md {% if name == 'panel_quiz_results' %}bg-primary text-on-primary{% else %}bg-surface-container-lowest hover:bg-surface-container-high{% endif %}"><span class="material-symbols-outlined text-[18px]">quiz</span>Тест нәтижелері</a>
+  <a href="{% url 'panel_users' %}" class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl font-label-md text-label-md {% if name == 'panel_users' %}bg-primary text-on-primary{% else %}bg-surface-container-lowest hover:bg-surface-container-high{% endif %}"><span class="material-symbols-outlined text-[18px]">group</span>Пайдаланушылар</a>
+  {% if user.is_staff %}<a href="{% url 'admin:index' %}" class="flex items-center gap-space-xs px-space-md py-space-sm rounded-xl font-label-md text-label-md bg-surface-container-lowest hover:bg-surface-container-high"><span class="material-symbols-outlined text-[18px]">database</span>Django admin</a>{% endif %}
+</nav>
+{% endwith %}

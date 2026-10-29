@@ -1,0 +1,39 @@
+{% extends "core/base.html" %}
+{% block title %}Тест: {{ text.title }}{% endblock %}
+{% block content %}
+<div class="flex flex-col w-full gap-space-lg max-w-3xl mx-auto">
+  <div class="rounded-xl bg-gradient-to-r from-primary to-primary-container p-space-xl text-on-primary flex flex-col gap-space-xs">
+    <span class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-on-primary/10 w-fit font-label-sm text-label-sm"><span class="material-symbols-outlined text-[18px]">quiz</span>Мәтінді түсіну тесті • {{ questions|length }} сұрақ</span>
+    <h1 class="font-headline-lg text-headline-lg">«{{ text.title }}»</h1>
+    <p class="font-body-md text-body-md text-on-primary-container">Әр сұраққа бір дұрыс жауапты таңда. Мәтінді қайта қарағың келсе, төмендегі батырманы бас.</p>
+  </div>
+
+  <details class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg">
+    <summary class="cursor-pointer font-label-lg text-label-lg flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary">article</span>Мәтінді қайта оқу</summary>
+    <p class="mt-space-md font-reader-md-mobile text-reader-md-mobile leading-relaxed">{{ text.body|linebreaksbr }}</p>
+  </details>
+
+  {% if errors %}<div class="px-space-lg py-space-md rounded-xl bg-error-container text-on-error-container font-label-md text-label-md">Барлық сұраққа жауап бер.</div>{% endif %}
+
+  <form method="post" class="flex flex-col gap-space-md">
+    {% csrf_token %}
+    {% for q in questions %}
+    <fieldset class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-sm">
+      <legend class="sr-only">{{ q.prompt }}</legend>
+      <h2 class="font-headline-sm text-headline-sm"><span class="text-primary">{{ forloop.counter }}.</span> {{ q.prompt }}</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+        {% for c in q.choices.all %}
+        <label class="cursor-pointer">
+          <input type="radio" name="q{{ q.pk }}" value="{{ c.pk }}" class="peer sr-only" required/>
+          <span class="flex items-center gap-space-sm px-space-md py-space-md rounded-xl border-2 border-surface-container-high hover:bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary-fixed peer-focus-visible:ring-2 peer-focus-visible:ring-primary font-body-lg text-body-lg">
+            <span class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center font-label-md text-label-md shrink-0">{{ "ABCD"|slice:forloop.counter|last }}</span>{{ c.label }}
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+    </fieldset>
+    {% endfor %}
+    <button type="submit" class="h-14 rounded-xl bg-secondary hover:bg-on-secondary-container text-on-secondary font-label-lg text-label-lg flex items-center justify-center gap-space-xs"><span class="material-symbols-outlined">send</span>Жауаптарды жіберу</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "core/base.html" %}
+{% block title %}Баптаулар{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto flex flex-col gap-space-xl">
+  <h1 class="font-headline-lg text-headline-lg">Баптаулар</h1>
+
+  <form method="post" class="bg-surface-container-lowest rounded-xl shadow-sm p-space-xl flex flex-col gap-space-md">
+    {% csrf_token %}
+    <h2 class="font-headline-sm text-headline-sm">Жеке мәліметтер</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">{% for field in profile_form %}{% include "core/_field.html" %}{% endfor %}</div>
+    <button name="profile" value="1" class="self-end px-space-lg py-space-sm rounded-xl bg-primary text-on-primary font-label-md text-label-md">Сақтау</button>
+  </form>
+
+  {% if user.is_student %}
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-xl flex flex-col gap-space-sm">
+    <h2 class="font-headline-sm text-headline-sm">Менің сыныбым және кіру кодым</h2>
+    <p>Сынып: <b>{{ user.school_class|default:"тағайындалмаған" }}</b>{% if user.school_class.teacher %} • Мұғалім: {{ user.school_class.teacher.display_name }}{% endif %}</p>
+    <p>Кіру коды: <b class="font-mono">{{ user.login_code }}</b> <span class="text-on-surface-variant font-body-sm text-body-sm">— бұл кодты ата-анаңа бер, олар сенің нәтижелеріңді көре алады.</span></p>
+  </div>
+  {% endif %}
+
+  <form method="post" class="bg-surface-container-lowest rounded-xl shadow-sm p-space-xl flex flex-col gap-space-md">
+    {% csrf_token %}
+    <h2 class="font-headline-sm text-headline-sm">Құпиясөзді өзгерту</h2>
+    {% for field in password_form %}{% include "core/_field.html" %}{% endfor %}
+    <button name="password" value="1" class="self-end px-space-lg py-space-sm rounded-xl bg-primary text-on-primary font-label-md text-label-md">Өзгерту</button>
+  </form>
+</div>
+{% endblock %}
