@@ -1,0 +1,1 @@
+# qazaqread-project
