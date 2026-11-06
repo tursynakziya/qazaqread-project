@@ -162,6 +162,18 @@ class AuthTests(Fixture):
         self.assertContains(resp, "Бұл құпиясөз тым қысқа")
         self.assertNotContains(resp, "This password")
 
+    def test_password_form_is_in_kazakh_in_a_russian_browser(self):
+        self.login(self.student)
+        resp = self.client.post(
+            reverse("settings"),
+            {"password": "1", "old_password": "x", "new_password1": "123", "new_password2": "456"},
+            headers={"accept-language": "ru"},
+        )
+        for text in ("Ескі құпиясөз", "Жаңа құпиясөз", "Жаңа құпиясөзді растау", "Ескі құпиясөз қате енгізілді", "Екі құпиясөз бірдей емес"):
+            self.assertContains(resp, text)
+        for text in ("Старый пароль", "Новый пароль", "парол"):
+            self.assertNotContains(resp, text)
+
     def test_parent_adds_child_by_code(self):
         self.login(self.parent)
         self.client.post(reverse("add_child"), {"login_code": self.other.login_code})

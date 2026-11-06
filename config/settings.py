@@ -63,7 +63,6 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # serves static files when DEBUG is off
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -132,10 +131,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "kk"
 
-LANGUAGES = [
-    ("kk", "Қазақша"),
-    ("ru", "Русский"),
-]
+# The site exists only in Kazakh, whatever language the browser asks for.
+LANGUAGES = [("kk", "Қазақша")]
 
 # Kazakh for Django's own messages that its bundled translation leaves in English.
 LOCALE_PATHS = [BASE_DIR / "locale"]

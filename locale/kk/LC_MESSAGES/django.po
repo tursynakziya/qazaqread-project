@@ -99,6 +99,30 @@ msgstr "Дұрыс логин енгізіңіз. Тек әріптер, сан�
 msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Міндетті өріс. Ең көбі 150 таңба: әріптер, сандар және @/./+/-/_ қана."
 
+msgid "password"
+msgstr "құпиясөз"
+
+msgid "Password"
+msgstr "Құпиясөз"
+
+msgid "Password confirmation"
+msgstr "Құпиясөзді растау"
+
+msgid "Old password"
+msgstr "Ескі құпиясөз"
+
+msgid "New password"
+msgstr "Жаңа құпиясөз"
+
+msgid "New password confirmation"
+msgstr "Жаңа құпиясөзді растау"
+
+msgid "Your old password was entered incorrectly. Please enter it again."
+msgstr "Ескі құпиясөз қате енгізілді. Қайтадан енгізіңіз."
+
+msgid "Change password"
+msgstr "Құпиясөзді өзгерту"
+
 msgid "Password reset"
 msgstr "Құпиясөзді қалпына келтіру"
 
