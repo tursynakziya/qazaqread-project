@@ -24,12 +24,16 @@ class QazaqUserAdmin(UserAdmin):
     search_fields = ("username", "first_name", "last_name", "email", "login_code")
     filter_horizontal = ("children", "groups", "user_permissions")
     fieldsets = UserAdmin.fieldsets + (
-        ("QazaqRead", {"fields": ("role", "school_name", "school_class", "children", "login_code")}),
+        ("QazaqRead", {"fields": ("role", "school_name", "school_class", "study_grade", "children", "login_code")}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
         ("QazaqRead", {"fields": ("role", "first_name", "last_name", "school_class")}),
     )
     actions = ["new_login_codes"]
+
+    @admin.display(description="Аты-жөні")
+    def display_name(self, user):
+        return user.display_name
 
     @admin.action(description="Жаңа кіру коды (QR) жасау")
     def new_login_codes(self, request, queryset):

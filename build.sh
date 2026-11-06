@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Render build command: ./build.sh
+# Render build command: bash build.sh
 # Start command:        gunicorn config.wsgi --workers 1 --threads 8 --timeout 120
 #   (one worker: live speech recognisers are kept in that process's memory)
 set -o errexit
@@ -10,7 +10,7 @@ pip install -r requirements.txt
 MODEL=vosk-model-small-kz-0.42
 if [ ! -d "models/$MODEL" ]; then
   mkdir -p models
-  curl -sSL -o models/kz.zip "https://alphacephei.com/vosk/models/$MODEL.zip"
+  curl -fsSL -o models/kz.zip "https://alphacephei.com/vosk/models/$MODEL.zip"
   python -c "import zipfile; zipfile.ZipFile('models/kz.zip').extractall('models')"
   rm models/kz.zip
 fi

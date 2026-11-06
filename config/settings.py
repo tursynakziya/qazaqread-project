@@ -3,8 +3,8 @@ Django settings for the QazaqRead project.
 
 Secrets and deployment options come from environment variables:
     DJANGO_SECRET_KEY, DJANGO_DEBUG, DJANGO_ALLOWED_HOSTS
-    DATABASE_URL  e.g. postgresql://user:password@localhost:5432/qazaqread
-                  (not set: the local SQLite file db.sqlite3 is used)
+    DATABASE_URL  PostgreSQL, e.g. postgresql://user:password@host:5432/qazaqread
+                  (required; locally it is read from the .env file)
 
 On Render (the RENDER variable is set there) DEBUG is off by default;
 on your own computer it is on, so runserver serves static files and
@@ -12,11 +12,21 @@ login cookies work over plain http://127.0.0.1.
 """
 
 import os
+import sys
 from pathlib import Path
 
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Local secrets (DATABASE_URL, DJANGO_SECRET_KEY) from .env; real environment variables win.
+_env_file = BASE_DIR / ".env"
+if _env_file.exists():
+    for _line in _env_file.read_text(encoding="utf-8").splitlines():
+        _key, _sep, _value = _line.partition("=")
+        if _sep and not _key.strip().startswith("#"):
+            os.environ.setdefault(_key.strip(), _value.strip())
 
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
@@ -84,15 +94,18 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 
-if os.environ.get("DATABASE_URL"):
-    DATABASES = {"default": dj_database_url.config(conn_max_age=600, conn_health_checks=True)}
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+if not os.environ.get("DATABASE_URL"):
+    raise ImproperlyConfigured(
+        "DATABASE_URL is not set. Put it in the .env file next to manage.py, e.g.\n"
+        "DATABASE_URL=postgresql://user:password@host:5432/dbname"
+    )
+
+DATABASES = {"default": dj_database_url.config(conn_max_age=600, conn_health_checks=True)}
+
+# `manage.py test` builds a throwaway database; Render's PostgreSQL user may not create
+# databases, so tests run on in-memory SQLite. Real data lives only in PostgreSQL.
+if "test" in sys.argv[1:2]:
+    DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
 
 
 # Authentication
@@ -123,6 +136,9 @@ LANGUAGES = [
     ("kk", "Қазақша"),
     ("ru", "Русский"),
 ]
+
+# Kazakh for Django's own messages that its bundled translation leaves in English.
+LOCALE_PATHS = [BASE_DIR / "locale"]
 
 TIME_ZONE = "Asia/Almaty"
 

@@ -26,7 +26,7 @@
           <tr class="hover:bg-surface-container-low">
             <td class="px-space-lg py-space-sm font-label-md text-label-md">{{ p.display_name }}{% if p == user %} <span class="text-on-surface-variant">(сіз)</span>{% endif %}</td>
             <td class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant"><span class="font-label-md text-label-md text-on-surface">{{ p.username }}</span>{% if p.email %}<br>{{ p.email }}{% endif %}{% if p.is_student and p.login_code %}<br>QR коды: <span class="font-mono">{{ p.login_code }}</span>{% endif %}</td>
-            <td class="px-space-md py-space-sm">{{ p.school_class|default:"—" }}</td>
+            <td class="px-space-md py-space-sm">{{ p.class_label|default:"—" }}</td>
             <td class="px-space-md py-space-sm">
               <form method="post" action="{% url 'panel_user_role' p.pk %}">
                 {% csrf_token %}

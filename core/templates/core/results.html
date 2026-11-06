@@ -5,7 +5,7 @@
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-space-md">
     <div>
       <h1 class="font-headline-lg text-headline-lg">{% if user == student %}Менің нәтижелерім{% else %}{{ student.display_name }} — нәтижелер{% endif %}</h1>
-      <p class="font-body-md text-body-md text-on-surface-variant">{{ student.school_class|default:"Сыныпсыз" }} • Барлығы {{ s.count }} оқу • Норма: {{ s.norm_low }}–{{ s.norm_high }} сөз/мин</p>
+      <p class="font-body-md text-body-md text-on-surface-variant">{{ student.class_label|default:"Сыныпсыз" }} • Барлығы {{ s.count }} оқу • Норма: {{ s.norm_low }}–{{ s.norm_high }} сөз/мин</p>
     </div>
     <a href="{% url 'student_report' student.pk %}" class="flex items-center gap-space-xs px-space-lg py-space-sm rounded-xl bg-surface-container-high text-primary font-label-md text-label-md w-fit"><span class="material-symbols-outlined">print</span>Есепті басып шығару (PDF)</a>
   </div>

@@ -6,7 +6,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from .analysis import align
-from .models import ClassReading, ReadingSession, SchoolClass, Text, User, WordResult, split_words
+from .models import GRADE_NORMS, ClassReading, ReadingSession, SchoolClass, Text, User, WordResult, split_words
 
 S = WordResult.Status
 
@@ -130,6 +130,36 @@ class AuthTests(Fixture):
         })
         self.assertRedirects(resp, reverse("add_child"))
         self.assertTrue(User.objects.filter(email="new@x.kz", role="parent").exists())
+
+    def register_student(self, **extra):
+        return self.client.post(reverse("register"), {
+            "role": "student", "first_name": "Аружан", "last_name": "Қасым", "email": "aru@x.kz",
+            "password": "Strong-pass-2026", "agree": "on", **extra,
+        })
+
+    def test_register_student_with_grade(self):
+        self.assertRedirects(self.register_student(grade="2"), reverse("home"), fetch_redirect_response=False)
+        student = User.objects.get(email="aru@x.kz")
+        self.assertIsNone(student.school_class)
+        self.assertEqual(student.grade, 2)
+        self.assertEqual(student.class_label, "2-сынып")
+
+    def test_register_student_needs_grade_from_1_to_4(self):
+        for grade in ("", "5"):
+            self.assertEqual(self.register_student(grade=grade).status_code, 200)
+        self.assertFalse(User.objects.filter(email="aru@x.kz").exists())
+
+    def test_register_offers_only_grades(self):
+        resp = self.client.get(reverse("login"))
+        values = [value for value, _ in resp.context["register_form"].fields["grade"].choices]
+        self.assertEqual(values, ["", 1, 2, 3, 4])
+        self.assertNotContains(resp, "3 «А»")
+
+    def test_django_messages_are_in_kazakh(self):
+        resp = self.register_student(email="bad", password="123")
+        self.assertContains(resp, "Дұрыс электрондық пошта мекенжайын енгізіңіз.")
+        self.assertContains(resp, "Бұл құпиясөз тым қысқа")
+        self.assertNotContains(resp, "This password")
 
     def test_parent_adds_child_by_code(self):
         self.login(self.parent)
@@ -489,7 +519,12 @@ class ClassLessonTests(Fixture):
 
     def test_suggested_mark(self):
         self.read(self.student)
-        self.assertEqual(ReadingSession.objects.get().suggested_mark, 2)  # 8 words in a minute, norm is 50+
+        self.assertEqual(ReadingSession.objects.get().suggested_mark, 2)  # 8 words in a minute, norm is 60+
+
+    def test_grade_norms(self):
+        self.assertEqual(GRADE_NORMS, {1: (20, 25), 2: (40, 55), 3: (60, 75), 4: (80, 95)})
+        self.client.logout()
+        self.assertContains(self.client.get(reverse("login")), "1-сынып 20–25, 2-сынып 40–55, 3-сынып 60–75, 4-сынып 80–95")
 
     def test_only_the_class_teacher_runs_the_lesson(self):
         other_teacher = self.make("teacher2", User.Role.TEACHER)

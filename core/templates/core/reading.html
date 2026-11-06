@@ -38,7 +38,7 @@
 
   <div id="support-warning" class="hidden p-space-md rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex items-start gap-space-sm">
     <span class="material-symbols-outlined">info</span>
-    <span class="font-body-sm text-body-sm" id="support-warning-text">Сөйлеуді тану қазір қолжетімсіз. Оқуыңыз бәрібір жазылады, нәтижені мұғалім тыңдап тексереді.</span>
+    <span class="font-body-sm text-body-sm" id="support-warning-text">Сөйлеуді тану қазір қолжетімсіз. Оқуыңыз бәрібір жазылады, нәтижені мұғалім тыңдап тексереді.{% if speech_problem %}<br><b>Себебі (мұны тек мұғалім көреді):</b> {{ speech_problem }}{% endif %}</span>
   </div>
   <div id="mic-error" class="hidden p-space-md rounded-xl bg-error-container text-on-error-container flex items-start gap-space-sm">
     <span class="material-symbols-outlined">mic_off</span>
@@ -47,7 +47,7 @@
 
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-space-md">
     <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-1">
-      <span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-space-xs">Қалған уақыт <span id="rec-badge" class="hidden px-space-xs rounded text-[11px] font-semibold bg-error-container text-on-error-container">REC</span></span>
+      <span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-space-xs">Қалған уақыт <span id="rec-badge" class="hidden px-space-xs rounded text-[11px] font-semibold bg-error-container text-on-error-container">ЖАЗЫЛУДА</span></span>
       <span id="timer" class="font-headline-md text-headline-md tabular-nums">01:00</span>
       <div class="w-full h-1.5 rounded-full bg-surface-container-high overflow-hidden"><div id="time-bar" class="h-full bg-primary transition-all" style="width:100%"></div></div>
     </div>

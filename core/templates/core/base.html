@@ -67,7 +67,7 @@
             </div>
             <a href="{% url 'settings' %}" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-container-low font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">settings</span>Баптаулар</a>
             {% if user.is_admin %}<a href="{% url 'panel_dashboard' %}" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-container-low font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">dashboard</span>Әкімші панелі</a>{% endif %}
-            {% if user.is_staff %}<a href="{% url 'admin:index' %}" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-container-low font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">database</span>Django admin</a>{% endif %}
+            {% if user.is_staff %}<a href="{% url 'admin:index' %}" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-container-low font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">database</span>Жүйелік басқару</a>{% endif %}
             <form method="post" action="{% url 'logout' %}">{% csrf_token %}
               <button type="submit" class="w-full flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-error-container text-error font-label-md text-label-md"><span class="material-symbols-outlined text-[18px]">logout</span>Шығу</button>
             </form>

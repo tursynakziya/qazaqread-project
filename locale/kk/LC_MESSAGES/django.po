@@ -1,0 +1,278 @@
+# Kazakh for Django's own messages that its bundled kk catalog leaves in English.
+# After editing: msgfmt -o locale/kk/LC_MESSAGES/django.mo locale/kk/LC_MESSAGES/django.po
+msgid ""
+msgstr ""
+"Project-Id-Version: QazaqRead\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: kk\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+# --- Forms
+
+msgid "Enter a valid integer."
+msgstr "Дұрыс бүтін сан енгізіңіз."
+
+msgid "Enter a valid email address."
+msgstr "Дұрыс электрондық пошта мекенжайын енгізіңіз."
+
+msgid "Ensure this value has at least %(limit_value)d character (it has %(show_value)d)."
+msgid_plural "Ensure this value has at least %(limit_value)d characters (it has %(show_value)d)."
+msgstr[0] "Кемінде %(limit_value)d таңба болуы керек (қазір %(show_value)d)."
+msgstr[1] "Кемінде %(limit_value)d таңба болуы керек (қазір %(show_value)d)."
+
+msgid "Ensure this value has at most %(limit_value)d character (it has %(show_value)d)."
+msgid_plural "Ensure this value has at most %(limit_value)d characters (it has %(show_value)d)."
+msgstr[0] "Ең көбі %(limit_value)d таңба болуы керек (қазір %(show_value)d)."
+msgstr[1] "Ең көбі %(limit_value)d таңба болуы керек (қазір %(show_value)d)."
+
+msgid "Null characters are not allowed."
+msgstr "Нөлдік таңбаларға рұқсат жоқ."
+
+msgid "%(model_name)s with this %(field_labels)s already exists."
+msgstr "Осындай %(field_labels)s мәні бар %(model_name)s бұрыннан бар."
+
+msgid "Value %(value)r is not a valid choice."
+msgstr "%(value)r мәні дұрыс таңдау емес."
+
+msgid "Enter a complete value."
+msgstr "Мәнді толық енгізіңіз."
+
+msgid "“%(pk)s” is not a valid value."
+msgstr "“%(pk)s” дұрыс мән емес."
+
+msgid "- Select an option -"
+msgstr "— Таңдаңыз —"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "Image"
+msgstr "Сурет"
+
+# --- Passwords and accounts
+
+msgid "Enter the same password as before, for verification."
+msgstr "Растау үшін құпиясөзді қайта енгізіңіз."
+
+msgid "The two password fields didn’t match."
+msgstr "Екі құпиясөз бірдей емес."
+
+msgid "Email"
+msgstr "Электрондық пошта"
+
+msgid "email address"
+msgstr "электрондық пошта"
+
+msgid "This password is too short. It must contain at least %d character."
+msgid_plural "This password is too short. It must contain at least %d characters."
+msgstr[0] "Бұл құпиясөз тым қысқа. Кемінде %d таңба болуы керек."
+msgstr[1] "Бұл құпиясөз тым қысқа. Кемінде %d таңба болуы керек."
+
+msgid "Your password must contain at least %(min_length)d character."
+msgid_plural "Your password must contain at least %(min_length)d characters."
+msgstr[0] "Құпиясөзде кемінде %(min_length)d таңба болуы керек."
+msgstr[1] "Құпиясөзде кемінде %(min_length)d таңба болуы керек."
+
+msgid "The password is too similar to the %(verbose_name)s."
+msgstr "Құпиясөз «%(verbose_name)s» мәніне тым ұқсас."
+
+msgid "Your password can’t be too similar to your other personal information."
+msgstr "Құпиясөз жеке мәліметтеріңізге тым ұқсас болмауы керек."
+
+msgid "This password is too common."
+msgstr "Бұл құпиясөз тым жиі қолданылады."
+
+msgid "Your password can’t be a commonly used password."
+msgstr "Жиі қолданылатын құпиясөзді таңдамаңыз."
+
+msgid "This password is entirely numeric."
+msgstr "Бұл құпиясөз тек сандардан тұрады."
+
+msgid "Your password can’t be entirely numeric."
+msgstr "Құпиясөз тек сандардан тұрмауы керек."
+
+msgid "Enter a valid username. This value may contain only letters, numbers, and @/./+/-/_ characters."
+msgstr "Дұрыс логин енгізіңіз. Тек әріптер, сандар және @/./+/-/_ таңбаларын қолдануға болады."
+
+msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+msgstr "Міндетті өріс. Ең көбі 150 таңба: әріптер, сандар және @/./+/-/_ қана."
+
+msgid "Password reset"
+msgstr "Құпиясөзді қалпына келтіру"
+
+msgid "Password reset sent"
+msgstr "Құпиясөзді қалпына келтіру хаты жіберілді"
+
+msgid "Enter new password"
+msgstr "Жаңа құпиясөзді енгізіңіз"
+
+msgid "Password reset unsuccessful"
+msgstr "Сілтеме жарамсыз немесе мерзімі өткен"
+
+msgid "Password reset complete"
+msgstr "Құпиясөз қалпына келтірілді"
+
+msgid "Password change"
+msgstr "Құпиясөзді өзгерту"
+
+msgid "Password change successful"
+msgstr "Құпиясөз өзгертілді"
+
+# --- Admin site
+
+msgid "Authentication and Authorization"
+msgstr "Кіру және рұқсаттар"
+
+msgid "Administration"
+msgstr "Басқару"
+
+msgid "View site"
+msgstr "Сайтты ашу"
+
+msgid "Recent actions"
+msgstr "Соңғы әрекеттер"
+
+msgid "My actions"
+msgstr "Менің әрекеттерім"
+
+msgid "Remove from sorting"
+msgstr "Сұрыптаудан алып тастау"
+
+msgid "Toggle sorting"
+msgstr "Сұрыптауды ауыстыру"
+
+msgid "Show counts"
+msgstr "Санын көрсету"
+
+msgid "Run"
+msgstr "Орындау"
+
+msgid "Search %(name)s"
+msgstr "%(name)s: іздеу"
+
+msgid "Pagination %(name)s"
+msgstr "%(name)s: беттер"
+
+msgid "Breadcrumbs"
+msgstr "Бет жолы"
+
+msgid "Sidebar"
+msgstr "Бүйір мәзір"
+
+msgid "Toggle navigation"
+msgstr "Мәзірді ашу не жабу"
+
+msgid "Start typing to filter…"
+msgstr "Сүзу үшін теруді бастаңыз…"
+
+msgid "Filter navigation items"
+msgstr "Мәзір бөлімдерін сүзу"
+
+msgid "Select this object for an action - {}"
+msgstr "Әрекет үшін осы жазбаны таңдау - {}"
+
+msgid "Select all objects on this page for an action"
+msgstr "Әрекет үшін беттегі барлық жазбаны таңдау"
+
+msgid "0 of %(cnt)s selected"
+msgstr "%(cnt)s жазбаның 0-і таңдалды"
+
+msgid "Skip to main content"
+msgstr "Негізгі мазмұнға өту"
+
+msgid "Toggle theme (current theme: auto)"
+msgstr "Тақырыпты ауыстыру (қазір: автоматты)"
+
+msgid "Toggle theme (current theme: light)"
+msgstr "Тақырыпты ауыстыру (қазір: ашық)"
+
+msgid "Toggle theme (current theme: dark)"
+msgstr "Тақырыпты ауыстыру (қазір: қараңғы)"
+
+msgid "Add another %(model)s"
+msgstr "Тағы бір жазба қосу: %(model)s"
+
+msgid "Change selected %(model)s"
+msgstr "Таңдалған жазбаны өзгерту: %(model)s"
+
+msgid "Delete selected %(model)s"
+msgstr "Таңдалған жазбаны жою: %(model)s"
+
+msgid "View selected %(model)s"
+msgstr "Таңдалған жазбаны көру: %(model)s"
+
+msgid "Add link"
+msgstr "Қосу сілтемесі"
+
+msgid "Change or view list link"
+msgstr "Тізімді өзгерту не көру сілтемесі"
+
+msgid "Model name"
+msgstr "Бөлім атауы"
+
+msgid "View"
+msgstr "Көру"
+
+msgid "Close"
+msgstr "Жабу"
+
+msgid "Save and view"
+msgstr "Сақтап, көру"
+
+msgid "Currently:"
+msgstr "Қазір:"
+
+msgid "Change:"
+msgstr "Өзгерту:"
+
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] "Төмендегі қатені түзетіңіз."
+msgstr[1] "Төмендегі қателерді түзетіңіз."
+
+msgid "Search"
+msgstr "Іздеу"
+
+msgid "After you’ve created a user, you’ll be able to edit more user options."
+msgstr "Пайдаланушыны жасағаннан кейін басқа мәліметтерін де өзгерте аласыз."
+
+msgid "Hold down “Control”, or “Command” on a Mac, to select more than one."
+msgstr "Бірнешеуін таңдау үшін “Control” (Mac-та “Command”) пернесін басып тұрыңыз."
+
+msgid "Raw passwords are not stored, so there is no way to see the user’s password."
+msgstr "Құпиясөздер ашық сақталмайды, сондықтан пайдаланушының құпиясөзін көру мүмкін емес."
+
+msgid "Reset password"
+msgstr "Құпиясөзді жаңарту"
+
+msgid "Enabled"
+msgstr "Қосулы"
+
+msgid "Disabled"
+msgstr "Өшірулі"
+
+msgid "Password-based authentication"
+msgstr "Құпиясөзбен кіру"
+
+msgid "The groups this user belongs to. A user will get all permissions granted to each of their groups."
+msgstr "Пайдаланушы кіретін топтар. Ол әр топтың барлық рұқсаттарын алады."
+
+msgid "Specific permissions for this user."
+msgstr "Осы пайдаланушының жеке рұқсаттары."
+
+msgid "Whether the user will be able to authenticate using a password or not. If disabled, they may still be able to authenticate using other backends, such as Single Sign-On or LDAP."
+msgstr "Пайдаланушы құпиясөзбен кіре ала ма. Өшірілсе, басқа тәсілдермен кіруі мүмкін."
+
+msgid "algorithm"
+msgstr "алгоритм"
+
+msgid "iterations"
+msgstr "итерациялар"
+
+msgid "salt"
+msgstr "тұз"
+
+msgid "hash"
+msgstr "хэш"

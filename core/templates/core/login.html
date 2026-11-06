@@ -54,7 +54,7 @@
       <ul class="font-body-sm text-body-sm text-on-surface-variant list-disc pl-space-lg flex flex-col gap-1">
         <li><b class="text-on-surface">Жылдамдық</b> — минутына дұрыс оқылған сөз саны.</li>
         <li><b class="text-on-surface">Дәлдік</b> — оқылған сөздердің ішіндегі дұрыс сөздердің үлесі.</li>
-        <li>Нормалар: 1-сынып 25–30, 2-сынып 40–50, 3-сынып 50–60, 4-сынып 60–75 сөз/мин.</li>
+        <li>Нормалар: 1-сынып 20–25, 2-сынып 40–55, 3-сынып 60–75, 4-сынып 80–95 сөз/мин.</li>
         <li>Мұғалім аудиожазбаны тыңдап, кез келген сөздің бағасын түзете алады.</li>
       </ul>
     </div>
@@ -123,7 +123,7 @@
             {% with field=register_form.last_name %}{% include "core/_field.html" %}{% endwith %}
           </div>
           {% with field=register_form.school_name %}{% include "core/_field.html" %}{% endwith %}
-          <div id="class-field">{% with field=register_form.school_class %}{% include "core/_field.html" %}{% endwith %}</div>
+          <div id="class-field">{% with field=register_form.grade %}{% include "core/_field.html" %}{% endwith %}</div>
           {% with field=register_form.email %}{% include "core/_field.html" %}{% endwith %}
           {% with field=register_form.password %}{% include "core/_field.html" %}{% endwith %}
           {% with field=register_form.agree %}{% include "core/_field.html" %}{% endwith %}

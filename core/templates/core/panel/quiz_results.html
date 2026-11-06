@@ -16,7 +16,7 @@
         {% for a in attempts %}
         <tr class="hover:bg-surface-container-low">
           <td class="px-space-lg py-space-sm font-label-md text-label-md">{{ a.student.display_name }}</td>
-          <td class="px-space-md py-space-sm">{{ a.student.school_class|default:"—" }}</td>
+          <td class="px-space-md py-space-sm">{{ a.student.class_label|default:"—" }}</td>
           <td class="px-space-md py-space-sm">«{{ a.text.title }}»</td>
           <td class="px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">{{ a.created_at|when }}</td>
           <td class="px-space-md py-space-sm"><span class="px-space-sm py-0.5 rounded-full font-label-sm text-label-sm {% if a.percent >= 80 %}bg-secondary-container text-on-secondary-container{% elif a.percent >= 50 %}bg-tertiary-fixed text-on-tertiary-fixed{% else %}bg-error-container text-on-error-container{% endif %}">{{ a.correct }}/{{ a.total }} • {{ a.percent }}%</span></td>

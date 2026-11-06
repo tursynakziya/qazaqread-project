@@ -21,10 +21,10 @@ def int_or_none(value):
 
 
 GRADE_NORMS = {
-    1: (25, 30),
-    2: (40, 50),
-    3: (50, 60),
-    4: (60, 75),
+    1: (20, 25),
+    2: (40, 55),
+    3: (60, 75),
+    4: (80, 95),
 }
 
 WORD_RE = re.compile(r"[\w\-]+", re.UNICODE)
@@ -94,6 +94,10 @@ class User(AbstractUser):
         blank=True,
         related_name="students",
     )
+    # Grade chosen at registration, used until a teacher's class is assigned.
+    study_grade = models.PositiveSmallIntegerField(
+        "Оқитын сыныбы", choices=[(g, f"{g}-сынып") for g in GRADE_NORMS], null=True, blank=True
+    )
     children = models.ManyToManyField(
         "self",
         verbose_name="Балалары",
@@ -146,7 +150,14 @@ class User(AbstractUser):
 
     @property
     def grade(self):
-        return self.school_class.grade if self.school_class else None
+        return self.school_class.grade if self.school_class else self.study_grade
+
+    @property
+    def class_label(self):
+        """The teacher's class if there is one, otherwise the grade chosen at registration."""
+        if self.school_class:
+            return str(self.school_class)
+        return f"{self.study_grade}-сынып" if self.study_grade else ""
 
     def regenerate_login_code(self):
         self.login_code = new_login_code()
@@ -182,9 +193,9 @@ class Text(models.Model):
     word_count = models.PositiveIntegerField("Сөз саны", default=0, editable=False)
     is_featured = models.BooleanField("Күннің мәтіні", default=False)
     created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+        settings.AUTH_USER_MODEL, verbose_name="Қосқан", on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField("Қосылған күні", auto_now_add=True)
 
     class Meta:
         verbose_name = "Мәтін"
@@ -237,9 +248,9 @@ class Text(models.Model):
 class Assignment(models.Model):
     text = models.ForeignKey(Text, verbose_name="Мәтін", on_delete=models.CASCADE, related_name="assignments")
     school_class = models.ForeignKey(SchoolClass, verbose_name="Сынып", on_delete=models.CASCADE, related_name="assignments")
-    assigned_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="+")
+    assigned_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Тағайындаған", on_delete=models.SET_NULL, null=True, related_name="+")
     due_date = models.DateField("Мерзімі", null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField("Қосылған күні", auto_now_add=True)
 
     class Meta:
         verbose_name = "Тапсырма"
@@ -277,9 +288,9 @@ class ClassReading(models.Model):
 
     school_class = models.ForeignKey(SchoolClass, verbose_name="Сынып", on_delete=models.CASCADE, related_name="class_readings")
     text = models.ForeignKey(Text, verbose_name="Мәтін", on_delete=models.CASCADE, related_name="class_readings")
-    teacher = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="+")
+    teacher = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Мұғалім", on_delete=models.SET_NULL, null=True, related_name="+")
     absent = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="+", verbose_name="Келмегендер")
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField("Күні", default=timezone.now)
 
     class Meta:
         verbose_name = "Сыныпта оқу"
@@ -310,24 +321,24 @@ class ReadingSession(models.Model):
 
     student = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Оқушы", on_delete=models.CASCADE, related_name="sessions")
     text = models.ForeignKey(Text, verbose_name="Мәтін", on_delete=models.CASCADE, related_name="sessions")
-    assignment = models.ForeignKey(Assignment, on_delete=models.SET_NULL, null=True, blank=True, related_name="sessions")
+    assignment = models.ForeignKey(Assignment, verbose_name="Тапсырма", on_delete=models.SET_NULL, null=True, blank=True, related_name="sessions")
     audio = models.FileField("Аудиожазба", upload_to=audio_upload_path, blank=True)
     transcript = models.TextField("Танылған мәтін", blank=True)
     duration_seconds = models.FloatField("Ұзақтығы (сек)", default=0)
-    words_total = models.PositiveIntegerField(default=0)
-    words_correct = models.PositiveIntegerField(default=0)
-    words_review = models.PositiveIntegerField(default=0)
-    words_skipped = models.PositiveIntegerField(default=0)
+    words_total = models.PositiveIntegerField("Оқылған сөздер", default=0)
+    words_correct = models.PositiveIntegerField("Дұрыс сөздер", default=0)
+    words_review = models.PositiveIntegerField("Тексерілетін сөздер", default=0)
+    words_skipped = models.PositiveIntegerField("Өткізілген сөздер", default=0)
     wpm = models.FloatField("Жылдамдық (сөз/мин)", default=0)
     accuracy = models.FloatField("Дәлдік (%)", default=0)
-    status = models.CharField(max_length=10, choices=Status.choices, default=Status.COMPLETED)
+    status = models.CharField("Мәртебе", max_length=10, choices=Status.choices, default=Status.COMPLETED)
     teacher_comment = models.TextField("Мұғалім пікірі", blank=True)
     class_reading = models.ForeignKey(
         ClassReading, verbose_name="Сыныпта оқу", on_delete=models.SET_NULL, null=True, blank=True, related_name="sessions"
     )
     mark = models.PositiveSmallIntegerField("Баға", choices=MARKS, null=True, blank=True)
-    marked_at = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
+    marked_at = models.DateTimeField("Баға қойылған уақыт", null=True, blank=True)
+    created_at = models.DateTimeField("Күні", default=timezone.now)
 
     class Meta:
         verbose_name = "Оқу сессиясы"
@@ -392,13 +403,15 @@ class WordResult(models.Model):
         MISREAD = "misread", "Тексеру қажет"
         SKIPPED = "skipped", "Өткізіп алынған"
 
-    session = models.ForeignKey(ReadingSession, on_delete=models.CASCADE, related_name="word_results")
-    position = models.PositiveIntegerField()
-    expected = models.CharField(max_length=100)
-    heard = models.CharField(max_length=100, blank=True)
-    status = models.CharField(max_length=10, choices=Status.choices)
+    session = models.ForeignKey(ReadingSession, verbose_name="Оқу сессиясы", on_delete=models.CASCADE, related_name="word_results")
+    position = models.PositiveIntegerField("Реті")
+    expected = models.CharField("Мәтіндегі сөз", max_length=100)
+    heard = models.CharField("Естілген сөз", max_length=100, blank=True)
+    status = models.CharField("Мәртебе", max_length=10, choices=Status.choices)
 
     class Meta:
+        verbose_name = "Сөз нәтижесі"
+        verbose_name_plural = "Сөз нәтижелері"
         ordering = ["position"]
         unique_together = [("session", "position")]
 
@@ -428,11 +441,13 @@ class Question(models.Model):
 
 
 class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="choices")
+    question = models.ForeignKey(Question, verbose_name="Сұрақ", on_delete=models.CASCADE, related_name="choices")
     label = models.CharField("Жауап нұсқасы", max_length=300)
     is_correct = models.BooleanField("Дұрыс жауап", default=False)
 
     class Meta:
+        verbose_name = "Жауап нұсқасы"
+        verbose_name_plural = "Жауап нұсқалары"
         ordering = ["pk"]
 
     def __str__(self):
@@ -443,11 +458,11 @@ class QuizAttempt(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Оқушы", on_delete=models.CASCADE, related_name="quiz_attempts")
     text = models.ForeignKey(Text, verbose_name="Мәтін", on_delete=models.CASCADE, related_name="quiz_attempts")
     session = models.ForeignKey(
-        ReadingSession, on_delete=models.SET_NULL, null=True, blank=True, related_name="quiz_attempts"
+        ReadingSession, verbose_name="Оқу сессиясы", on_delete=models.SET_NULL, null=True, blank=True, related_name="quiz_attempts"
     )
     correct = models.PositiveSmallIntegerField("Дұрыс жауаптар", default=0)
     total = models.PositiveSmallIntegerField("Сұрақ саны", default=0)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField("Күні", default=timezone.now)
 
     class Meta:
         verbose_name = "Тест нәтижесі"
@@ -463,7 +478,11 @@ class QuizAttempt(models.Model):
 
 
 class AttemptAnswer(models.Model):
-    attempt = models.ForeignKey(QuizAttempt, on_delete=models.CASCADE, related_name="answers")
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="+")
-    choice = models.ForeignKey(Choice, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
-    is_correct = models.BooleanField(default=False)
+    attempt = models.ForeignKey(QuizAttempt, verbose_name="Тест нәтижесі", on_delete=models.CASCADE, related_name="answers")
+    question = models.ForeignKey(Question, verbose_name="Сұрақ", on_delete=models.CASCADE, related_name="+")
+    choice = models.ForeignKey(Choice, verbose_name="Таңдалған жауап", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
+    is_correct = models.BooleanField("Дұрыс", default=False)
+
+    class Meta:
+        verbose_name = "Тест жауабы"
+        verbose_name_plural = "Тест жауаптары"

@@ -15,7 +15,7 @@
     <div>
       <div class="font-headline-sm text-headline-sm text-primary">QazaqRead</div>
       <h1 class="font-headline-lg text-headline-lg">Оқу дағдысы бойынша есеп</h1>
-      <p class="text-on-surface-variant">{{ student.display_name }} • {{ student.school_class|default:"Сыныпсыз" }}{% if student.school_name %} • {{ student.school_name }}{% endif %}</p>
+      <p class="text-on-surface-variant">{{ student.display_name }} • {{ student.class_label|default:"Сыныпсыз" }}{% if student.school_name %} • {{ student.school_name }}{% endif %}</p>
     </div>
     <span class="font-body-sm text-body-sm text-on-surface-variant">{{ now|date:"d.m.Y" }}</span>
   </header>

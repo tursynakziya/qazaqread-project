@@ -14,7 +14,7 @@
   {% if user.is_student %}
   <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-xl flex flex-col gap-space-sm">
     <h2 class="font-headline-sm text-headline-sm">Менің сыныбым және кіру кодым</h2>
-    <p>Сынып: <b>{{ user.school_class|default:"тағайындалмаған" }}</b>{% if user.school_class.teacher %} • Мұғалім: {{ user.school_class.teacher.display_name }}{% endif %}</p>
+    <p>Сынып: <b>{{ user.class_label|default:"тағайындалмаған" }}</b>{% if user.school_class.teacher %} • Мұғалім: {{ user.school_class.teacher.display_name }}{% endif %}</p>
     <p>Кіру коды: <b class="font-mono">{{ user.login_code }}</b> <span class="text-on-surface-variant font-body-sm text-body-sm">— бұл кодты ата-анаңа бер, олар сенің нәтижелеріңді көре алады.</span></p>
   </div>
   {% endif %}

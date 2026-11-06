@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.password_validation import validate_password
 from django.utils.text import slugify
 
-from .models import Assignment, ClassReading, ReadingSession, SchoolClass, Text, User
+from .models import GRADE_NORMS, Assignment, ClassReading, ReadingSession, SchoolClass, Text, User
 
 INPUT = (
     "w-full px-space-md py-space-sm rounded-xl bg-surface-container-low border border-outline-variant "
@@ -45,8 +45,12 @@ class RegisterForm(StyledMixin, forms.Form):
     first_name = forms.CharField(label="Аты", max_length=150)
     last_name = forms.CharField(label="Тегі", max_length=150)
     school_name = forms.CharField(label="Мектеп", max_length=200, required=False)
-    school_class = forms.ModelChoiceField(
-        label="Сынып (оқушылар үшін)", queryset=SchoolClass.objects.all(), required=False, empty_label="— Таңдаңыз —"
+    grade = forms.TypedChoiceField(
+        label="Сынып (оқушылар үшін)",
+        choices=[("", "— Таңдаңыз —")] + [(g, f"{g}-сынып") for g in GRADE_NORMS],
+        coerce=int,
+        empty_value=None,
+        required=False,
     )
     email = forms.EmailField(label="Электрондық пошта")
     password = forms.CharField(label="Құпиясөз жасаңыз", widget=forms.PasswordInput, strip=False)
@@ -62,6 +66,8 @@ class RegisterForm(StyledMixin, forms.Form):
         data = super().clean()
         if data.get("password"):
             validate_password(data["password"], User(email=data.get("email", ""), first_name=data.get("first_name", "")))
+        if data.get("role") == User.Role.STUDENT and not data.get("grade") and "grade" not in self.errors:
+            self.add_error("grade", "Сыныпты таңдаңыз.")
         return data
 
     def save(self):
@@ -73,7 +79,7 @@ class RegisterForm(StyledMixin, forms.Form):
             last_name=d["last_name"],
             role=d["role"],
             school_name=d.get("school_name", ""),
-            school_class=d.get("school_class") if d["role"] == User.Role.STUDENT else None,
+            study_grade=d.get("grade") if d["role"] == User.Role.STUDENT else None,
         )
         user.set_password(d["password"])
         user.save()

@@ -14,7 +14,7 @@ from django.views.decorators.http import require_POST
 
 from .forms import LessonForm
 from .models import MARKS, READING_SECONDS, ClassReading, User, grade_norm, int_or_none
-from .speech import is_available as speech_available
+from .speech import problem as speech_problem
 from .views import role_required, save_reading, teacher_class
 
 MARK_VALUES = {value for value, _ in MARKS}
@@ -122,6 +122,7 @@ def lesson_read(request, pk, student_id):
     student = get_lesson_student(lesson, student_id)
     students = lesson.students()
     low, high = grade_norm(lesson.text.grade)
+    problem = speech_problem()
     return render(
         request,
         "core/reading.html",
@@ -129,7 +130,8 @@ def lesson_read(request, pk, student_id):
             "text": lesson.text,
             "norm_low": low,
             "norm_high": high,
-            "server_speech": speech_available(),
+            "server_speech": not problem,
+            "speech_problem": problem,
             "reading_seconds": READING_SECONDS,
             "submit_url": reverse("lesson_submit", args=[lesson.pk, student.pk]),
             "lesson": lesson,

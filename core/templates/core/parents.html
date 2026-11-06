@@ -18,12 +18,12 @@
     <div class="relative">
       <button id="child-btn" type="button" class="flex items-center gap-space-md px-space-md py-space-sm bg-surface-container-lowest rounded-xl shadow-sm">
         <span class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md">{{ child.initials }}</span>
-        <span class="flex flex-col text-left"><span class="font-label-lg text-label-lg">{{ child.display_name }}</span><span class="font-body-sm text-body-sm text-on-surface-variant">{{ child.school_class|default:"Сыныпсыз" }} сыныбы</span></span>
+        <span class="flex flex-col text-left"><span class="font-label-lg text-label-lg">{{ child.display_name }}</span><span class="font-body-sm text-body-sm text-on-surface-variant">{% if child.school_class %}{{ child.school_class }} сыныбы{% else %}{{ child.class_label|default:"Сыныпсыз" }}{% endif %}</span></span>
         <span class="material-symbols-outlined">expand_more</span>
       </button>
       <div id="child-menu" class="hidden absolute left-0 mt-space-xs w-72 bg-surface-container-lowest rounded-xl shadow-lg p-space-xs z-30">
         {% for c in children %}
-        <a href="?child={{ c.pk }}" class="flex items-center justify-between px-space-md py-space-sm rounded-lg hover:bg-surface-container-low"><span>{{ c.display_name }} <span class="text-on-surface-variant font-body-sm text-body-sm">{{ c.school_class|default:"" }}</span></span>{% if c == child %}<span class="material-symbols-outlined text-primary">check_circle</span>{% endif %}</a>
+        <a href="?child={{ c.pk }}" class="flex items-center justify-between px-space-md py-space-sm rounded-lg hover:bg-surface-container-low"><span>{{ c.display_name }} <span class="text-on-surface-variant font-body-sm text-body-sm">{{ c.class_label }}</span></span>{% if c == child %}<span class="material-symbols-outlined text-primary">check_circle</span>{% endif %}</a>
         {% endfor %}
         <a href="{% url 'add_child' %}" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg hover:bg-surface-container-low text-primary"><span class="material-symbols-outlined">add_circle</span>Баланы қосу</a>
       </div>

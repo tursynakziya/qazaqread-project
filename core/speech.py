@@ -56,12 +56,30 @@ def ffmpeg_path():
     return imageio_ffmpeg.get_ffmpeg_exe()
 
 
-def is_available():
+def problem():
+    """Why recognition is off (shown to teachers and admins), or "" when it works."""
     try:
         import vosk  # noqa: F401
-    except ImportError:
-        return False
-    return bool(model_path() and ffmpeg_path())
+    except Exception as exc:
+        return f"vosk кітапханасы жүктелмеді ({type(exc).__name__}: {exc}). requirements.txt орнатылғанын тексеріңіз."
+    if not model_path():
+        return (
+            f"Тану моделі табылмады: {Path(settings.BASE_DIR) / 'models'} папкасы бос. "
+            "Render-де құрастыру командасы «bash build.sh» болуы керек — модельді сол жүктейді."
+        )
+    try:
+        if not ffmpeg_path():
+            return "ffmpeg табылмады (imageio-ffmpeg пакеті орнатылмаған)."
+    except Exception as exc:
+        return f"ffmpeg табылмады ({exc})."
+    return ""
+
+
+def is_available():
+    reason = problem()
+    if reason:
+        logger.warning("Speech recognition unavailable: %s", reason)  # visible in Render → Logs
+    return not reason
 
 
 def _get_model():

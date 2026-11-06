@@ -74,19 +74,23 @@ python manage.py runserver
 Другую модель (например, большую `vosk-model-kz-0.42`) можно указать через `QAZAQREAD_VOSK_MODEL`.
 
 Нормы скорости (слов/мин) заданы в одном месте — `GRADE_NORMS` в `core/models.py`:
-1 класс 25–30, 2 класс 40–50, 3 класс 50–60, 4 класс 60–75.
+1 класс 20–25, 2 класс 40–55, 3 класс 60–75, 4 класс 80–95.
 
-## База данных: SQLite или PostgreSQL
+Сообщения самого Django, не переведённые в его казахском каталоге, переведены в `locale/kk/LC_MESSAGES/django.po`.
+После правки файла: `msgfmt -o locale/kk/LC_MESSAGES/django.mo locale/kk/LC_MESSAGES/django.po` (`.mo` хранится в git).
 
-По умолчанию используется файл `db.sqlite3`. Для PostgreSQL задайте переменную `DATABASE_URL`:
+## База данных: PostgreSQL
 
-```powershell
-$env:DATABASE_URL = "postgresql://postgres:ПАРОЛЬ@localhost:5432/qazaqread"
-python manage.py migrate
-python -X utf8 manage.py loaddata backup/qazaqread_data.json   # перенос данных из SQLite
+Используется только PostgreSQL (Render PostgreSQL). Адрес берётся из переменной `DATABASE_URL`;
+на своём компьютере он записан в файле `.env` рядом с `manage.py` (в git не попадает):
+
+```
+DATABASE_URL=postgresql://USER:ПАРОЛЬ@dpg-....frankfurt-postgres.render.com/qazaqread_db?sslmode=require
 ```
 
-Выгрузка данных из текущей базы (в т.ч. из SQLite, без `DATABASE_URL`):
+Без `DATABASE_URL` сайт не запустится. Тесты (`manage.py test`) идут на временной SQLite в памяти.
+
+Резервная копия данных:
 
 ```powershell
 python -X utf8 manage.py dumpdata --natural-foreign --natural-primary -e contenttypes -e auth.permission -e sessions -e admin.logentry --indent 1 -o backup/qazaqread_data.json
@@ -94,7 +98,7 @@ python -X utf8 manage.py dumpdata --natural-foreign --natural-primary -e content
 
 ## Render
 
-- Build command: `./build.sh` (зависимости, модель Vosk, `collectstatic`, `migrate`).
+- Build command: `bash build.sh` (зависимости, модель Vosk, `collectstatic`, `migrate`).
 - Start command: `gunicorn config.wsgi --workers 1 --threads 8 --timeout 120` — один воркер,
   потому что живое распознавание хранит состояние в памяти процесса.
 - Переменные: `DATABASE_URL` (Internal Database URL от Render PostgreSQL), `DJANGO_SECRET_KEY`.
