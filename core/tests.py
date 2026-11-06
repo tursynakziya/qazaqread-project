@@ -5,6 +5,7 @@ from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
+from . import stats
 from .analysis import align
 from .models import GRADE_NORMS, ClassReading, ReadingSession, SchoolClass, Text, User, WordResult, split_words
 
@@ -171,6 +172,48 @@ class AuthTests(Fixture):
         self.assertEqual(self.client.get(reverse("teacher_dashboard")).status_code, 403)
         self.client.logout()
         self.assertEqual(self.client.get(reverse("student_dashboard")).status_code, 302)
+
+
+class SpeedChartTests(Fixture):
+    def read(self, wpm, **extra):
+        return ReadingSession.objects.create(student=self.student, text=self.text, wpm=wpm, accuracy=90, **extra)
+
+    def test_geometry_and_norm_band(self):
+        chart = stats.speed_chart([self.read(30), self.read(66)], 60, 75)
+        self.assertEqual([p["x"] for p in chart["points"]], ["25.00", "75.00"])
+        self.assertEqual(chart["ticks"][-1]["value"], 100)
+        self.assertEqual(chart["points"][1]["y"], "34.00")
+        self.assertEqual((chart["band"]["y"], chart["band"]["height"]), ("25.00", "15.00"))
+        self.assertEqual(chart["delta"], 36)
+        self.assertEqual(chart["status"][0], "Нормада")
+
+    def test_status_against_norm(self):
+        self.assertEqual(stats.speed_status(50, 60, 75)[0], "Нормаға 10 сөз жетпейді")
+        self.assertEqual(stats.speed_status(80, 60, 75)[0], "Нормадан жоғары")
+
+    def test_labels_only_first_peak_and_last(self):
+        sessions = [self.read(v) for v in (30, 50, 90, 40, 45)]
+        chart = stats.speed_chart(sessions, 60, 75)
+        self.assertEqual([p["value"] for p in chart["points"] if p["labelled"]], [30, 90, 45])
+
+    def test_repeated_date_is_shown_once(self):
+        chart = stats.speed_chart([self.read(30), self.read(40)], 60, 75)
+        self.assertTrue(chart["points"][0]["date"])
+        self.assertEqual(chart["points"][1]["date"], "")
+
+    def test_readings_waiting_for_review_are_left_out(self):
+        self.read(40)
+        self.read(0, status=ReadingSession.Status.NEEDS_REVIEW)
+        chart = stats.student_summary(self.student)["chart"]
+        self.assertEqual([p["value"] for p in chart["points"]], [40])
+
+    def test_page_uses_dots_in_coordinates(self):
+        self.read(33)
+        self.read(47)
+        self.login(self.student)
+        resp = self.client.get(reverse("student_dashboard"))
+        self.assertContains(resp, "Сынып нормасы: 60–75 сөз/мин")
+        self.assertRegex(resp.content.decode(), r'polyline points="[\d.]+,[\d.]+ [\d.]+,[\d.]+"')
 
 
 class TeacherTests(Fixture):

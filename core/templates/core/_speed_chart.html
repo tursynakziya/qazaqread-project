@@ -1,32 +1,55 @@
-{% load qazaq %}{# expects: chart (from stats.line_chart) #}
+{% load qazaq %}{# expects: chart (from stats.speed_chart) #}
 {% if chart %}
-<div class="w-full bg-surface-container-low/40 rounded-xl p-space-lg flex flex-col">
-  <div class="relative w-full h-56">
-    <svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 {{ chart.width }} {{ chart.height }}" role="img" aria-label="Оқу жылдамдығы графигі">
-      <defs>
-        <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="#3457d5" stop-opacity="0.25"></stop>
-          <stop offset="100%" stop-color="#3457d5" stop-opacity="0"></stop>
-        </linearGradient>
-      </defs>
-      <line stroke="#dae2ff" stroke-width="1" x1="0" x2="{{ chart.width }}" y1="{{ chart.height|add:'-20' }}" y2="{{ chart.height|add:'-20' }}"></line>
-      {% if chart.target_y %}
-      <line stroke="#006b5f" stroke-dasharray="6,4" stroke-width="2" x1="0" x2="{{ chart.width }}" y1="{{ chart.target_y }}" y2="{{ chart.target_y }}"></line>
-      <text font-size="11" font-weight="600" fill="#006b5f" text-anchor="end" x="{{ chart.width|add:'-5' }}" y="{{ chart.target_y|add:'-5' }}">Норма: {{ chart.target }} сөз/мин</text>
-      {% endif %}
-      <path d="{{ chart.area }}" fill="url(#chartGradient)"></path>
-      <path d="{{ chart.line }}" fill="none" stroke="#0e3cbc" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"></path>
-      {% for p in chart.points %}
-      <g><title>{{ p.label }}: {{ p.value }} сөз/мин</title>
-        <circle cx="{{ p.x }}" cy="{{ p.y }}" fill="{% if forloop.last %}#006b5f{% else %}#faf8ff{% endif %}" r="5" stroke="{% if forloop.last %}#faf8ff{% else %}#0e3cbc{% endif %}" stroke-width="3"></circle>
-        <text font-size="12" font-weight="700" fill="#101b34" text-anchor="middle" x="{{ p.x }}" y="{{ p.y|add:'-12' }}">{{ p.value }}</text>
-      </g>
-      {% endfor %}
-    </svg>
+<div class="w-full flex flex-col gap-space-md" style="print-color-adjust: exact; -webkit-print-color-adjust: exact;" role="group" aria-label="Оқу жылдамдығы графигі. {{ chart.summary }}">
+  <div class="flex flex-wrap items-center gap-x-space-md gap-y-space-xs">
+    <div class="flex items-baseline gap-space-xs">
+      <span class="font-headline-lg text-headline-lg text-on-surface">{{ chart.last }}</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">сөз/мин, соңғы нәтиже</span>
+    </div>
+    {% if chart.status %}<span class="inline-flex items-center gap-space-xs px-space-sm py-1 rounded-full font-label-sm text-label-sm {{ chart.status.1|tone_classes }}"><span class="material-symbols-outlined text-[16px]">{{ chart.status.2 }}</span>{{ chart.status.0 }}</span>{% endif %}
+    {% if chart.delta is not None %}<span class="font-body-sm text-body-sm text-on-surface-variant">Соңғы {{ chart.count }} оқуда: <b class="text-on-surface">{% if chart.delta %}{{ chart.delta|signed }} сөз/мин{% else %}өзгеріс жоқ{% endif %}</b></span>{% endif %}
   </div>
-  <div class="flex justify-between items-center px-2 pt-space-xs font-label-sm text-label-sm text-on-surface-variant">
-    {% for p in chart.points %}<span class="{% if forloop.last %}text-primary font-bold{% endif %}">{{ p.label }}</span>{% endfor %}
+
+  <div class="flex flex-wrap gap-x-space-md gap-y-space-xs font-label-sm text-label-sm text-on-surface-variant">
+    <span class="inline-flex items-center gap-space-xs"><span class="inline-block w-5 h-0.5 rounded-full bg-primary"></span>Оқу жылдамдығы (сөз/мин)</span>
+    {% if chart.band %}<span class="inline-flex items-center gap-space-xs"><span class="inline-block w-5 h-3 rounded-sm bg-secondary/20"></span>Сынып нормасы: {{ chart.band.low }}–{{ chart.band.high }} сөз/мин</span>{% endif %}
   </div>
+
+  <div>
+    <div class="flex gap-space-sm">
+      <div class="relative w-7 h-56 shrink-0 font-label-sm text-label-sm text-on-surface-variant" aria-hidden="true">
+        {% for tick in chart.ticks %}<span class="absolute right-0 -translate-y-1/2 tabular-nums" style="top: {{ tick.y }}%">{{ tick.value }}</span>{% endfor %}
+      </div>
+      <div class="relative flex-1 min-w-0 h-56">
+        {% for tick in chart.ticks %}<div class="absolute inset-x-0 h-px bg-outline-variant/50" style="top: {{ tick.y }}%"></div>{% endfor %}
+        {% if chart.band %}<div class="absolute inset-x-0 bg-secondary/20" style="top: {{ chart.band.y }}%; height: {{ chart.band.height }}%"></div>{% endif %}
+        <svg class="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline points="{{ chart.line }}" fill="none" stroke="#0e3cbc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline>
+        </svg>
+        {% for p in chart.points %}
+        <span class="absolute {% if p.last %}w-3.5 h-3.5{% else %}w-2.5 h-2.5{% endif %} rounded-full bg-primary ring-2 ring-white -translate-x-1/2 -translate-y-1/2" style="left: {{ p.x }}%; top: {{ p.y }}%"></span>
+        {% if p.labelled %}<span class="absolute -translate-x-1/2 -translate-y-full text-on-surface {% if p.last %}font-label-lg text-label-lg{% else %}font-label-md text-label-md{% endif %}" style="left: {{ p.x }}%; top: calc({{ p.y }}% - 8px); text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;">{{ p.value }}</span>{% endif %}
+        {% endfor %}
+        <div class="absolute inset-0 flex">
+          {% for p in chart.points %}
+          <div class="relative flex-1 group outline-none" tabindex="0" aria-label="{{ p.when }}, «{{ p.title }}»: {{ p.value }} сөз/мин, дәлдігі {{ p.accuracy }}%">
+            <div class="absolute inset-y-0 left-1/2 w-px bg-outline hidden group-hover:block group-focus:block"></div>
+            <div class="absolute top-0 z-20 w-36 p-space-sm rounded-lg bg-inverse-surface text-inverse-on-surface font-body-sm text-body-sm shadow-lg pointer-events-none hidden group-hover:block group-focus:block print:hidden {% if p.tip_side == 'left' %}left-1/2 ml-2{% elif p.tip_side == 'right' %}right-1/2 mr-2{% else %}left-1/2 -translate-x-1/2{% endif %}">
+              <div class="font-label-md text-label-md">{{ p.value }} сөз/мин</div>
+              <div>Дәлдігі: {{ p.accuracy }}%</div>
+              <div class="mt-1 opacity-80 font-label-sm text-label-sm">«{{ p.title }}»<br>{{ p.when }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-space-sm pt-space-xs font-label-sm text-label-sm text-on-surface-variant" aria-hidden="true">
+      <div class="w-7 shrink-0"></div>
+      <div class="flex-1 min-w-0 flex">{% for p in chart.points %}<span class="flex-1 min-w-0 text-center {% if p.last %}text-on-surface font-bold{% endif %} {% if p.date_minor %}invisible sm:visible{% endif %}">{{ p.date }}</span>{% endfor %}</div>
+    </div>
+  </div>
+  {% if chart.count == 1 %}<p class="font-body-sm text-body-sm text-on-surface-variant">Өзгерісті көру үшін тағы бір мәтін оқыңыз.</p>{% endif %}
 </div>
 {% else %}
 <div class="w-full bg-surface-container-low/40 rounded-xl p-space-xl flex flex-col items-center gap-space-sm text-center">

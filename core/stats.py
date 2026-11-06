@@ -1,6 +1,7 @@
 """Numbers and chart geometry for the dashboards."""
 
 from datetime import timedelta
+from math import ceil
 
 from django.db.models import Avg, Count, Sum
 from django.utils import timezone
@@ -10,6 +11,8 @@ from .models import ReadingSession, grade_norm
 MONTHLY_GOAL = 15
 DAILY_MINUTES_GOAL = 15
 WEEKDAYS = ["Дс", "Сс", "Ср", "Бс", "Жм", "Сн", "Жс"]
+CHART_READINGS = 7
+AXIS_STEPS = (5, 10, 20, 25, 50, 100, 200, 500)
 
 
 def local_today():
@@ -32,31 +35,71 @@ def streak_days(sessions):
     return streak
 
 
-def line_chart(values, labels, target=None, width=500, height=200, pad=30):
-    """Return SVG coordinates for a simple line chart."""
-    if not values:
+def speed_status(value, low, high):
+    """(text, tone, icon) for a speed against the grade norm."""
+    if value > high:
+        return "Нормадан жоғары", "good", "check_circle"
+    if value >= low:
+        return "Нормада", "good", "check_circle"
+    return f"Нормаға {low - value} сөз жетпейді", "mid", "info"
+
+
+def speed_chart(sessions, low, high):
+    """
+    Speed chart for `sessions` (oldest first), positioned in percent of the plot.
+
+    Coordinates are ready-made strings: the template puts them into CSS and SVG,
+    where a localised decimal comma would break them.
+    """
+    if not sessions:
         return None
-    top = max(values + ([target] if target else [])) * 1.15 or 1
-    step = (width - 2 * pad) / max(len(values) - 1, 1)
+    values = [round(s.wpm) for s in sessions]
+    peak = max(values + [high]) * 1.1
+    step = next((s for s in AXIS_STEPS if peak / s <= 5), AXIS_STEPS[-1])
+    top = (ceil(peak / step) or 1) * step
 
-    def y(v):
-        return round(height - 20 - (v / top) * (height - 40), 1)
+    def y(value):
+        return f"{100 - 100 * value / top:.2f}"
 
-    points = [
-        {"x": round(pad + i * step, 1), "y": y(v), "value": round(v), "label": labels[i]}
-        for i, v in enumerate(values)
-    ]
-    line = " ".join(f"{'M' if i == 0 else 'L'} {p['x']},{p['y']}" for i, p in enumerate(points))
-    area = f"{line} L {points[-1]['x']},{height - 20} L {points[0]['x']},{height - 20} Z"
+    count = len(values)
+    peak_index = values.index(max(values))
+    points, previous_date = [], None
+    for i, (session, value) in enumerate(zip(sessions, values)):
+        local = timezone.localtime(session.created_at)
+        date = local.strftime("%d.%m")
+        points.append(
+            {
+                "x": f"{100 * (i + 0.5) / count:.2f}",
+                "y": y(value),
+                "value": value,
+                "date": date if date != previous_date else "",
+                "date_minor": count > 5 and (count - 1 - i) % 2 == 1,  # no room for every date on a phone
+                "when": local.strftime("%d.%m.%Y, %H:%M"),
+                "title": session.text.title,
+                "accuracy": round(session.accuracy),
+                "labelled": i in (0, peak_index, count - 1),
+                "last": i == count - 1,
+                "tip_side": "center" if count == 1 else ("left" if i < count / 2 else "right"),
+            }
+        )
+        previous_date = date
+
+    last = values[-1]
+    status = speed_status(last, low, high) if high else None
+    delta = last - values[0] if count > 1 else None
+    summary = f"Соңғы нәтиже: {last} сөз/мин."
+    if status:
+        summary += f" {status[0]}. Норма: {low}–{high} сөз/мин."
     return {
         "points": points,
-        "last": points[-1],
-        "line": line,
-        "area": area,
-        "target_y": y(target) if target else None,
-        "target": target,
-        "width": width,
-        "height": height,
+        "line": " ".join(f"{p['x']},{p['y']}" for p in points),
+        "ticks": [{"value": v, "y": y(v)} for v in range(0, top + 1, step)],
+        "band": {"low": low, "high": high, "y": y(high), "height": f"{100 * (high - low) / top:.2f}"} if high else None,
+        "last": last,
+        "status": status,
+        "delta": delta,
+        "count": count,
+        "summary": summary,
     }
 
 
@@ -81,12 +124,9 @@ def student_summary(student):
     total_seconds = sum(s.duration_seconds for s in sessions)
     active_days = len({timezone.localtime(s.created_at).date() for s in sessions}) or 1
 
-    recent = list(reversed(sessions[:7]))
-    chart = line_chart(
-        [s.wpm for s in recent],
-        [timezone.localtime(s.created_at).strftime("%d.%m") for s in recent],
-        target=high or None,
-    )
+    # A reading still waiting for the teacher has no speed yet; 0 would look like a real drop.
+    scored = [s for s in sessions if s.status == ReadingSession.Status.COMPLETED]
+    chart = speed_chart(scored[:CHART_READINGS][::-1], low, high)
 
     return {
         "sessions": sessions,
